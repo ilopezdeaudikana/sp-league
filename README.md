@@ -21,7 +21,7 @@ In case two or more teams have the same number of points a tiebreaker is done in
 - The third tiebreaker is the number of scored goals.
 - The final tiebreaker is alphabetic ascending order by name.
 
-## API Details
+### API Details
 The API will runs on http://localhots:3001/  
 
 #### GET /api/version 
