@@ -1,25 +1,37 @@
 # sports-league
 
-This template should help get you started developing with Vue 3 in Vite.
+Stack: Vue 3, Vite, Vitest, Typescript.
 
-## Recommended IDE Setup
+## Requirements: 
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+### Routes
+- `/` - should open the Schedule Page.
+- `/schedule` - should open the Schedule Page.
+- `/leaderboard` - should open the Leaderboard Page.
+- Any other route should show the 404 Not Found page.
 
-## Type Support for `.vue` Imports in TS
+#### Tie Breaker: 
+- For each victory teams will get 3 points.
+- For each draw teams will get 1 point.
+- Teams in the leaderboard are ordered by the number of points in descending order.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+In case two or more teams have the same number of points a tiebreaker is done in the following order:
+- The first tiebreaker is the number of points in head-to-head matches between the teams that have the same number of points. So, if multiple teams have the same number of points the order is defined by “creating” a mini leaderboard of those teams only and sorting them only by the number of points.
+- The second tiebreaker is goal difference.
+- The third tiebreaker is the number of scored goals.
+- The final tiebreaker is alphabetic ascending order by name.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+### API Details
+The API will runs on http://localhots:3001/  
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+#### GET /api/version 
+Authorization Required: NO
 
-## Customize configuration
+#### GET /api/v1/getAccessToken
+Authorization Required: NO
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+#### GET /api/v1/getAllMatches
+Authorization Required: YES (Bearer Token)
 
 ## Project Setup
 
@@ -31,6 +43,10 @@ npm install
 
 ```sh
 npm run dev
+```
+
+```sh
+npx json-fake-server -m dev-mock-server-config.json
 ```
 
 ### Type-Check, Compile and Minify for Production
