@@ -11,6 +11,7 @@
 <style scoped>
 .container {
   display: flex;
+  flex: 1;
   width: 100%;
   justify-content: center;
 }

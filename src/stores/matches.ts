@@ -4,7 +4,7 @@ import type { ApiMatch } from '@/types/match'
 
 export const useMatchesStore = defineStore('matches', () => {
   const matches = ref<ApiMatch[]>([])
-  function setMatches(newMatches: ApiMatch[]) {
+  const setMatches = (newMatches: ApiMatch[]) => {
     matches.value = newMatches
   }
 

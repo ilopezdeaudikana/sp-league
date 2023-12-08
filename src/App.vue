@@ -8,15 +8,15 @@ import { useVersionStore } from './stores/version'
 import { useMatchesStore } from './stores/matches'
 
 const loaded = ref(false)
-const versionStore = useVersionStore()
-const matchesStore = useMatchesStore()
+const { setVersion } = useVersionStore()
+const { setMatches } = useMatchesStore()
 
 
 onMounted(async() => {
   const token = await AuthService.getToken()
   const [version, matches] = await Promise.all([VersionService.getVersion(), LeagueService.getMatches(token)])
-  versionStore.setVersion(version)
-  matchesStore.setMatches(matches)
+  setVersion(version)
+  setMatches(matches)
   loaded.value = true
 })
 </script>

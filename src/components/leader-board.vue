@@ -6,8 +6,10 @@ import ResponsiveTable from './responsive-table.vue'
 import PageH1 from './page-h1.vue'
 import TeamRenderer from './team-renderer.vue'
 import { useMatchesStore } from '@/stores/matches'
+import { storeToRefs } from 'pinia'
 
 const store = useMatchesStore()
+const { matches } = storeToRefs(store)
 
 const teamsForDisplay = ref<TeamStatsViewModel[]>([])
 
@@ -32,7 +34,7 @@ const columnsMetada = {
 const { sortBy, parseMatches, extractTiedTeams, tieBreak, teamsByPoints } = useStandings()
 
 onMounted(() => {
-  teamsByPoints.value = sortBy(parseMatches(store.matches), 'points')
+  teamsByPoints.value = sortBy(parseMatches(matches.value), 'points')
 
   const extracted = extractTiedTeams(teamsByPoints.value, 'points', true)
 

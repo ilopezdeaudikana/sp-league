@@ -1,9 +1,9 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-export const useVersionStore = defineStore('version', () => {
+export const useVersionStore = defineStore('apiVersionStore', () => {
   const version = ref<string>('')
-  function setVersion(newVersion: string) {
+  const setVersion = (newVersion: string) => {
     version.value = newVersion
   }
 

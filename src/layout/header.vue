@@ -23,6 +23,7 @@ console.log(svg)
   align-items: center;
   background-color: #025feb;
   height: 60px;
+  width: 100%;
 }
 .logo {
   display: flex;

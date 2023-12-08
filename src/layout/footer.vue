@@ -1,27 +1,25 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import { useVersionStore } from '../stores/version'
 const store = useVersionStore()
+const { version } = storeToRefs(store)
+
 </script>
 
 <template>
-  <div class="bar">
-    <div class="version">Version: {{ store.version }}</div>
+  <div class="footer">
+    <div class="v">Version: {{ version }}</div>
   </div>
 </template>
 
 <style scoped>
-.bar {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  width: 100%;
+.footer {
   background-color: #f6f7f7;
   height: 40px;
-  position: fixed;
-  bottom: env(safe-area-inset-bottom);
+  width: 100%;
 }
 
-.version {
-  padding-right: 20px;
+.v {
+  padding: 10px;
 }
 </style>

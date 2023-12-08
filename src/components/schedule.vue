@@ -4,8 +4,10 @@ import PageH1 from './page-h1.vue'
 import type { ApiMatch, MatchResult } from '@/types/match'
 import TeamRenderer from './team-renderer.vue'
 import { useMatchesStore } from '@/stores/matches'
+import { storeToRefs } from 'pinia'
 
 const store = useMatchesStore()
+const { matches } = storeToRefs(store)
 
 const columns = [
   { name: 'matchDate', display: 'Date' },
@@ -69,8 +71,8 @@ const parseMatches = (items: ApiMatch[]) => {
 <template>
   <PageH1>League Schedule</PageH1>
   <ResponsiveTable
-    v-if="store.matches"
-    :items="parseMatches(store.matches)"
+    v-if="matches"
+    :items="parseMatches(matches)"
     :columns="columns"
     :meta="columnsMetada"
     :tablet-hide="['stadium']"
