@@ -40,7 +40,7 @@ onMounted(() => {
 
   if (extracted.length) {
     for (let index = 0; index < extracted.length; index++) {
-      const tiedTeamsMatches = store.matches.filter(
+      const tiedTeamsMatches = matches.value.filter(
         (match) =>
           extracted[index].includes(match.homeTeam) && extracted[index].includes(match.awayTeam)
       )
