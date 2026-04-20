@@ -22,7 +22,7 @@ In case two or more teams have the same number of points a tiebreaker is done in
 - The final tiebreaker is alphabetic ascending order by name.
 
 ### API Details
-The API will runs on http://localhots:3001/  
+The API will run on http://localhots:3001/  
 
 #### GET /api/version 
 Authorization Required: NO
