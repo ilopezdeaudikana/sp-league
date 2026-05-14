@@ -27,10 +27,10 @@ The API will run on http://localhots:3001/
 #### GET /api/version 
 Authorization Required: NO
 
-#### GET /api/v1/token
+#### GET /api/{version}/token
 Authorization Required: NO
 
-#### GET /api/v1/matches
+#### GET /api/{version}/matches
 Authorization Required: YES (Bearer Token)
 
 ## Project Setup
@@ -46,7 +46,13 @@ npm run dev
 ```
 
 ```sh
-npx json-fake-server -m dev-mock-server-config.json
+cd server &&  node --env-file=.env index.ts
+```
+
+You need to create a `server/.env` file with two env variables for the mocked authorization to work
+```
+JWT_SECRET="foo"
+APP_USER="bar"
 ```
 
 ### Type-Check, Compile and Minify for Production

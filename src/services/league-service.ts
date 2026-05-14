@@ -1,12 +1,12 @@
 import type { ApiMatch } from '@/types/match'
+import { authFetch } from '../utils/authFetch'
+import { VersionService } from './version-service'
 
 export const LeagueService = {
 
-  getMatches: async (token: string): Promise<ApiMatch[]> => {
-    const response = await fetch('http://localhost:3001/api/v1/matches', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+  getMatches: async (): Promise<ApiMatch[]> => {
+    const response = await authFetch(`http://localhost:3001/api/v${VersionService.getVersion()}/matches`)
     const { matches } = await response.json()
-    return matches
+    return matches 
   }
 }

@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import type { TeamStatsViewModel } from '@/types/team'
+import type { ApiMatch } from '@/types/match'
 import { useStandings } from '../hooks/use-standings'
 import ResponsiveTable from './responsive-table.vue'
 import PageH1 from './page-h1.vue'
 import TeamRenderer from './team-renderer.vue'
-import { useMatchesStore } from '@/stores/matches'
-import { storeToRefs } from 'pinia'
 
-const store = useMatchesStore()
-const { matches } = storeToRefs(store)
+const { matches } = defineProps<{ matches: ApiMatch[]}>()
 
 const teamsForDisplay = ref<TeamStatsViewModel[]>([])
 
@@ -34,13 +32,13 @@ const columnsMetada = {
 const { sortBy, parseMatches, extractTiedTeams, tieBreak, teamsByPoints } = useStandings()
 
 onMounted(() => {
-  teamsByPoints.value = sortBy(parseMatches(matches.value), 'points')
+  teamsByPoints.value = sortBy(parseMatches(matches), 'points')
 
   const extracted = extractTiedTeams(teamsByPoints.value, 'points', true)
 
   if (extracted.length) {
     for (let index = 0; index < extracted.length; index++) {
-      const tiedTeamsMatches = matches.value.filter(
+      const tiedTeamsMatches = matches.filter(
         (match) =>
           extracted[index].includes(match.homeTeam) && extracted[index].includes(match.awayTeam)
       )

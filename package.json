@@ -12,17 +12,19 @@
   "dependencies": {
     "@tanstack/vue-query": "^5.100.10",
     "@vueuse/core": "^14.2.1",
-    "pinia": "^3.0.4",
-    "zod": "4.4.3",
     "vue": "^3.5.32",
-    "vue-router": "^5.0.4"
+    "vue-router": "^5.0.4",
+    "zod": "4.4.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.12.2",
     "@vitejs/plugin-vue": "^6.0.6",
     "@vue/tsconfig": "^0.9.1",
     "cors": "^2.8.6",
-    "express":"^5.2.1",
+    "express": "^5.2.1",
     "jsdom": "^29.0.2",
     "jsonwebtoken": "^9.0.3",
     "typescript": "~6.0.2",

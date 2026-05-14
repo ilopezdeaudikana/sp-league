@@ -1,12 +1,11 @@
+let version: string | null = null
+
 export const VersionService = {
-  /**
-   * Returns the full list of matches.
-   *
-   * @returns {Array} List of matches.
-   */
-  getVersion: async () => {
+  fetchVersion: async (): Promise<string> => {
     const response = await fetch('http://localhost:3001/api/version')
-    const { version } = await response.json()
-    return version
-  }
+    const { version: apiVersion } = await response.json()
+    version = apiVersion
+    return apiVersion
+  },
+  getVersion: () => version
 }

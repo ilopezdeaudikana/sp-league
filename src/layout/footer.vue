@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { storeToRefs } from 'pinia'
-import { useVersionStore } from '../stores/version'
-const store = useVersionStore()
-const { version } = storeToRefs(store)
+import { VersionService } from '@/services/version-service'
+import { onMounted, ref } from 'vue'
 
+const version = ref('')
+
+onMounted(() => {
+  version.value = VersionService.getVersion() ?? ''
+})
 </script>
 
 <template>

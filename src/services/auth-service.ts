@@ -1,8 +1,15 @@
+import { VersionService } from './version-service'
+
+let bearerToken: string | null = null
+
 export const AuthService = {
 
-  getToken: async (): Promise<{ access_token: string }> => {
-    const response = await fetch('http://localhost:3001/api/v1/token')
-    const { access_token } = await response.json()
-    return access_token
-  }
+  getToken: async (): Promise<{ token: string }> => {
+    const response = await fetch(`http://localhost:3001/api/v${VersionService.getVersion()}/token`)
+    const { token } = await response.json()
+    bearerToken = token
+    return token
+  },
+
+  getBearerToken: () => bearerToken
 }
