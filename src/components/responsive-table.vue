@@ -2,16 +2,15 @@
 import { ref, type Component, type Ref, computed } from 'vue'
 import { useDimensions } from '../hooks/use-dimensions'
 
-type MetaData<N extends string | number | symbol> = {
-  [K in N]: {
-    style?: string
-    cellRenderer?: Component
-  }
+interface MetaData {
+  style?: string
+  cellRenderer?: Component
 }
+
 interface Props {
   items: T[]
   columns: { name: string; display: string, centered?: boolean }[]
-  meta: MetaData<keyof T>
+  meta: Record<keyof T, MetaData>
   desktopHide?: string[]
   mobileHide?: string[]
   tabletHide?: string[]
@@ -66,7 +65,7 @@ const columnWidth = computed(() => {
           centered: columns[index].centered
         }">
           <template v-if="meta[cell]?.cellRenderer && typeof item[cell] === 'object'">
-            <component :is="meta[cell].cellRenderer" v-bind="item[cell]" />
+            <component :is="meta[cell]?.cellRenderer" v-bind="item[cell]" />
           </template>
           <div v-else v-html="item[cell]" :style="meta[cell]?.style"></div>
         </td>

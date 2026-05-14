@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from 'express'
+import type { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 
 export const validateToken = (req: Request, _: Response) => {
