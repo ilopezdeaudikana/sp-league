@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, type Component, type Ref, computed } from 'vue'
 import { useDimensions } from '../hooks/use-dimensions'
+import type { MatchResult } from '@/types/match'
 interface MetaData {
   [key: string]: {
     style?: string
@@ -8,7 +9,7 @@ interface MetaData {
   }
 }
 interface Props {
-  items: any[]
+  items: MatchResult[]
   columns: { name: string; display: string }[]
   meta: MetaData
   desktopHide?: string[]
@@ -25,6 +26,10 @@ withDefaults(defineProps<Props>(), {
 const tableContainer = ref() as Ref<HTMLElement>
 
 const { isDesktop, isTablet, isMobile } = useDimensions(tableContainer)
+
+const toKeys = <T extends Object>(obj: T): (keyof T)[] => {
+  return Object.keys(obj) as (keyof T)[]
+}
 
 const columnWidth = computed(() => {
   if (isDesktop.value) return '20%' 
@@ -51,9 +56,9 @@ const columnWidth = computed(() => {
       </th>
     </thead>
     <tbody>
-      <tr v-for="(item, index) of items" :key="item.id" :class="{ even: index % 2 }">
+      <tr v-for="(item, index) of items" :key="index" :class="{ even: index % 2 }">
         <td
-          v-for="cell in Object.keys(item)"
+          v-for="cell in toKeys(item)"
           :key="cell"
           :class="{
             cell: true,
@@ -62,7 +67,7 @@ const columnWidth = computed(() => {
             hideInMobile: isMobile && mobileHide.includes(cell)
           }"
         >
-          <template v-if="meta[cell]?.cellRenderer">
+          <template v-if="meta[cell]?.cellRenderer && typeof item[cell] === 'object'">
             <component :is="meta[cell].cellRenderer" v-bind="item[cell]" />
           </template>
           <div v-else v-html="item[cell]" :style="meta[cell]?.style"></div>

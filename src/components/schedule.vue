@@ -39,7 +39,7 @@ const toCustomDateFormat = (matchDate: number): string => {
 }
 
 const parseMatches = (items: ApiMatch[]) => {
-  return items.reduce<Partial<MatchResult>[]>((acc, cur) => {
+  return items.reduce<MatchResult[]>((acc, cur) => {
     const { matchDate, stadium, homeTeam, awayTeam, matchPlayed, homeTeamScore, awayTeamScore } = cur
 
     acc.push({
@@ -57,6 +57,12 @@ const parseMatches = (items: ApiMatch[]) => {
 
 <template>
   <PageH1>League Schedule</PageH1>
-  <ResponsiveTable v-if="matches" :items="parseMatches(matches)" :columns="columns" :meta="columnsMetada"
-    :tablet-hide="['stadium']" :mobile-hide="['matchDate', 'stadium']" />
+  <ResponsiveTable 
+    v-if="matches" 
+    :items="parseMatches(matches)" 
+    :columns 
+    :meta="columnsMetada"
+    :tablet-hide="['stadium']" 
+    :mobile-hide="['matchDate', 'stadium']" 
+  />
 </template>
