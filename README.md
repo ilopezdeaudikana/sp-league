@@ -27,10 +27,10 @@ The API will run on http://localhots:3001/
 #### GET /api/version 
 Authorization Required: NO
 
-#### GET /api/v1/getAccessToken
+#### GET /api/v1/token
 Authorization Required: NO
 
-#### GET /api/v1/getAllMatches
+#### GET /api/v1/matches
 Authorization Required: YES (Bearer Token)
 
 ## Project Setup

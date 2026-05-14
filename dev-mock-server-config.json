@@ -7,7 +7,7 @@
     "api": [
         {
             "method": "GET",
-            "path": "/api/v1/getAllMatches",
+            "path": "/api/v1/matches",
             "response": {
                 "success": true,
                 "matches": [
@@ -78,7 +78,7 @@
         },
         {
             "method": "GET",
-            "path": "/api/v1/getAccessToken",
+            "path": "/api/v1/token",
             "response": {
                 "success": true,
                 "access_token": "YuHBdSlDXY000xa8IlCm7Qgq4_s"

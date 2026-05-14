@@ -43,26 +43,16 @@ const toCustomDateFormat = (matchDate: number): string => {
 
 const parseMatches = (items: ApiMatch[]) => {
   return items.reduce<Partial<MatchResult>[]>((acc, cur) => {
-    const { matchDate, stadium, homeTeam, awayTeam, matchPlayed, homeTeamScore, awayTeamScore } =
-      cur
+    const { matchDate, stadium, homeTeam, awayTeam, matchPlayed, homeTeamScore, awayTeamScore } = cur
 
-    if (matchPlayed) {
-      acc.push({
-        matchDate: toCustomDateFormat(matchDate),
-        stadium,
-        homeTeam: { name: homeTeam, post: true },
-        result: `${homeTeamScore} : ${awayTeamScore}`,
-        awayTeam: { name: awayTeam, post: false }
-      })
-    } else {
-      acc.push({
-        matchDate: toCustomDateFormat(matchDate),
-        stadium,
-        homeTeam: { name: homeTeam, post: true },
-        result: `- : -`,
-        awayTeam: { name: awayTeam, post: false }
-      })
-    }
+    acc.push({
+      matchDate: toCustomDateFormat(matchDate),
+      stadium,
+      homeTeam: { name: homeTeam, post: true },
+      result: matchPlayed ? `${homeTeamScore} : ${awayTeamScore}` : `- : -`,
+      awayTeam: { name: awayTeam, post: false }
+    })
+
     return acc
   }, [])
 }
@@ -70,12 +60,6 @@ const parseMatches = (items: ApiMatch[]) => {
 
 <template>
   <PageH1>League Schedule</PageH1>
-  <ResponsiveTable
-    v-if="matches"
-    :items="parseMatches(matches)"
-    :columns="columns"
-    :meta="columnsMetada"
-    :tablet-hide="['stadium']"
-    :mobile-hide="['matchDate', 'stadium']"
-  />
+  <ResponsiveTable v-if="matches" :items="parseMatches(matches)" :columns="columns" :meta="columnsMetada"
+    :tablet-hide="['stadium']" :mobile-hide="['matchDate', 'stadium']" />
 </template>

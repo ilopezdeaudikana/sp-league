@@ -1,11 +1,7 @@
 export const AuthService = {
-  /**
-   * Returns the full list of matches.
-   *
-   * @returns {Array} List of matches.
-   */
-  getToken: async () => {
-    const response = await fetch('http://localhost:3001/api/v1/getAccessToken')
+
+  getToken: async (): Promise<{ access_token: string }> => {
+    const response = await fetch('http://localhost:3001/api/v1/token')
     const { access_token } = await response.json()
     return access_token
   }

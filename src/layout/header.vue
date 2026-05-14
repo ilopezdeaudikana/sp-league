@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import svg from '@/assets/images/logo.svg'
 
-console.log(svg)
 </script>
 <template>
   <div class="bar">
