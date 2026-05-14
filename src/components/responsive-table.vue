@@ -1,17 +1,17 @@
-<script lang="ts" setup>
+<script lang="ts" setup generic="T extends Object">
 import { ref, type Component, type Ref, computed } from 'vue'
 import { useDimensions } from '../hooks/use-dimensions'
-import type { MatchResult } from '@/types/match'
-interface MetaData {
-  [key: string]: {
+
+type MetaData<N extends string | number | symbol> = {
+  [K in N]: {
     style?: string
     cellRenderer?: Component
   }
 }
 interface Props {
-  items: MatchResult[]
-  columns: { name: string; display: string }[]
-  meta: MetaData
+  items: T[]
+  columns: { name: string; display: string, centered?: boolean }[]
+  meta: MetaData<keyof T>
   desktopHide?: string[]
   mobileHide?: string[]
   tabletHide?: string[]
@@ -31,8 +31,12 @@ const toKeys = <T extends Object>(obj: T): (keyof T)[] => {
   return Object.keys(obj) as (keyof T)[]
 }
 
+const shouldShow = (items: string[], key: string | symbol | number) => {
+  if (typeof key === 'string') return items.includes(key)
+}
+
 const columnWidth = computed(() => {
-  if (isDesktop.value) return '20%' 
+  if (isDesktop.value) return '20%'
   if (isTablet.value) return '25%'
   if (isMobile.value) return '33%'
   return 'auto'
@@ -42,31 +46,25 @@ const columnWidth = computed(() => {
 <template>
   <table ref="tableContainer" class="table">
     <thead class="header">
-      <th
-        v-for="column in columns"
-        :key="column.name"
-        :class="{
-          column: true,
-          hide: isDesktop && desktopHide.includes(column.name),
-          hideInTablet: isTablet && tabletHide.includes(column.name),
-          hideInMobile: isMobile && mobileHide.includes(column.name)
-        }"
-      >
+      <th v-for="column in columns" :key="column.name" :class="{
+        column: true,
+        hide: isDesktop && shouldShow(desktopHide, column.name),
+        hideInTablet: isTablet && shouldShow(tabletHide, column.name),
+        hideInMobile: isMobile && shouldShow(mobileHide, column.name),
+        centered: column.centered
+      }">
         {{ column.display }}
       </th>
     </thead>
     <tbody>
       <tr v-for="(item, index) of items" :key="index" :class="{ even: index % 2 }">
-        <td
-          v-for="cell in toKeys(item)"
-          :key="cell"
-          :class="{
-            cell: true,
-            hide: isDesktop && desktopHide.includes(cell),
-            hideInTablet: isTablet && tabletHide.includes(cell),
-            hideInMobile: isMobile && mobileHide.includes(cell)
-          }"
-        >
+        <td v-for="(cell, index) in toKeys(item)" :key="cell" :class="{
+          cell: true,
+          hide: isDesktop && shouldShow(desktopHide, cell),
+          hideInTablet: isTablet && shouldShow(tabletHide, cell),
+          hideInMobile: isMobile && shouldShow(mobileHide, cell),
+          centered: columns[index].centered
+        }">
           <template v-if="meta[cell]?.cellRenderer && typeof item[cell] === 'object'">
             <component :is="meta[cell].cellRenderer" v-bind="item[cell]" />
           </template>
@@ -100,10 +98,15 @@ const columnWidth = computed(() => {
   background-color: #f6f7f7;
   border: 1px solid #e4edf2;
 }
+
 .cell {
   height: 60px;
   font-size: 14px;
   vertical-align: middle;
+}
+
+.centered {
+  text-align: center;
 }
 
 .cell:first-child,

@@ -7,17 +7,17 @@ import ResponsiveTable from './responsive-table.vue'
 import PageH1 from './page-h1.vue'
 import TeamRenderer from './team-renderer.vue'
 
-const { matches } = defineProps<{ matches: ApiMatch[]}>()
+const { matches } = defineProps<{ matches: ApiMatch[] }>()
 
 const teamsForDisplay = ref<TeamStatsViewModel[]>([])
 
 const columns = [
   { name: 'team', display: 'Name' },
-  { name: 'mp', display: 'MP' },
-  { name: 'gf', display: 'GF' },
-  { name: 'ga', display: 'GA' },
-  { name: 'gd', display: 'GD' },
-  { name: 'points', display: 'Points' }
+  { name: 'mp', display: 'MP', centered: true },
+  { name: 'gf', display: 'GF', centered: true },
+  { name: 'ga', display: 'GA', centered: true },
+  { name: 'gd', display: 'GD', centered: true },
+  { name: 'points', display: 'Points', centered: true }
 ]
 
 const columnsMetada = {
@@ -57,12 +57,6 @@ onMounted(() => {
 
 <template>
   <PageH1>League Standings</PageH1>
-  <ResponsiveTable
-    :items="teamsForDisplay"
-    :columns="columns"
-    :meta="columnsMetada"
-    :desktop-hide="['gd']"
-    :tablet-hide="['gd']"
-    :mobile-hide="['gf', 'ga']"
-  />
+  <ResponsiveTable :items="teamsForDisplay" :columns :meta="columnsMetada" :desktop-hide="['gd']" :tablet-hide="['gd']"
+    :mobile-hide="['gf', 'ga']" />
 </template>
