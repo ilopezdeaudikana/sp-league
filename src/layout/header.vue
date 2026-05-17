@@ -20,7 +20,7 @@ import svg from '@/assets/images/logo.svg'
   flex-direction: row;
   padding: 0 40px;
   align-items: center;
-  background-color: #025feb;
+  background-color: var(--vt-c-indigo);
   height: 60px;
   width: 100%;
 }

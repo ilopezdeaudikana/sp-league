@@ -1,30 +1,18 @@
 <script lang="ts" setup>
-import ResponsiveTable from './responsive-table.vue'
+import ResponsiveTable, { type ColumnConfig} from './responsive-table.vue'
 import PageH1 from './page-h1.vue'
 import type { ApiMatch, MatchResult } from '@/types/match'
 import TeamRenderer from './team-renderer.vue'
 
 const { matches } = defineProps<{ matches: ApiMatch[] }>()
 
-const columns = [
-  { name: 'matchDate', display: 'Date' },
-  { name: 'stadium', display: 'Stadium' },
-  { name: 'homeTeam', display: 'Home Team' },
-  { name: 'result', display: '' },
-  { name: 'awayTeam', display: 'Away Team' }
+const columns: ColumnConfig<MatchResult, keyof MatchResult>[]= [
+  { name: 'matchDate', key: 'matchDate', display: 'Date' },
+  { name: 'stadium', key: 'stadium', display: 'Stadium' },
+  { name: 'homeTeam', key: 'homeTeam', display: 'Home Team', cellRenderer: TeamRenderer },
+  { name: 'result', key: 'result', display: '', style: 'font-weight: bold; font-size: 16px; text-align: center' },
+  { name: 'awayTeam', key: 'awayTeam', display: 'Away Team', cellRenderer: TeamRenderer }
 ]
-
-const columnsMetada = {
-  homeTeam: {
-    cellRenderer: TeamRenderer
-  },
-  awayTeam: {
-    cellRenderer: TeamRenderer
-  },
-  result: {
-    style: 'font-weight: bold; font-size: 16px; text-align: center'
-  }
-}
 
 const toCustomDateFormat = (matchDate: number): string => {
   return new Date(matchDate)
@@ -38,7 +26,7 @@ const toCustomDateFormat = (matchDate: number): string => {
     .replace(',', '')
 }
 
-const parseMatches = (items: ApiMatch[]) => {
+const parseMatches = (items: ApiMatch[]): MatchResult[] => {
   return items.reduce<MatchResult[]>((acc, cur) => {
     const { matchDate, stadium, homeTeam, awayTeam, matchPlayed, homeTeamScore, awayTeamScore } = cur
 
@@ -61,7 +49,6 @@ const parseMatches = (items: ApiMatch[]) => {
     v-if="matches" 
     :items="parseMatches(matches)" 
     :columns 
-    :meta="columnsMetada"
     :tablet-hide="['stadium']" 
     :mobile-hide="['matchDate', 'stadium']" 
   />

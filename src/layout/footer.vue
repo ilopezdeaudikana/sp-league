@@ -1,12 +1,5 @@
 <script lang="ts" setup>
-import { VersionService } from '@/services/version-service'
-import { onMounted, ref } from 'vue'
-
-const version = ref('')
-
-onMounted(() => {
-  version.value = VersionService.getVersion() ?? ''
-})
+defineProps<{ version: string }>()
 </script>
 
 <template>
@@ -17,7 +10,7 @@ onMounted(() => {
 
 <style scoped>
 .footer {
-  background-color: #f6f7f7;
+  background-color: var(--color-background-soft);
   height: 40px;
   width: 100%;
 }

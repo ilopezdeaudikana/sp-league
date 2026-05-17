@@ -2,15 +2,17 @@
 import { ref, type Component, type Ref, computed } from 'vue'
 import { useDimensions } from '../hooks/use-dimensions'
 
-interface MetaData {
+
+export interface ColumnConfig<T, K extends keyof T> {
+  name: string; display: string, centered?: boolean
+  key: K; 
   style?: string
   cellRenderer?: Component
 }
 
 interface Props {
   items: T[]
-  columns: { name: string; display: string, centered?: boolean }[]
-  meta: Record<keyof T, MetaData>
+  columns: ColumnConfig<T, keyof T>[]
   desktopHide?: string[]
   mobileHide?: string[]
   tabletHide?: string[]
@@ -64,10 +66,10 @@ const columnWidth = computed(() => {
           hideInMobile: isMobile && shouldShow(mobileHide, cell),
           centered: columns[index].centered
         }">
-          <template v-if="meta[cell]?.cellRenderer && typeof item[cell] === 'object'">
-            <component :is="meta[cell]?.cellRenderer" v-bind="item[cell]" />
+          <template v-if="columns[index]?.cellRenderer && typeof item[cell] === 'object'">
+            <component :is="columns[index]?.cellRenderer" v-bind="item[cell]" />
           </template>
-          <div v-else v-html="item[cell]" :style="meta[cell]?.style"></div>
+          <div v-else v-html="item[cell]" :style="columns[index]?.style"></div>
         </td>
       </tr>
     </tbody>
@@ -82,8 +84,8 @@ const columnWidth = computed(() => {
 }
 
 .header {
-  background-color: #e4edf2;
-  padding: 0 20px;
+  background-color: var(--vt-c-indigo-faded);
+  color: var(--vt-c-text-dark-1)
 }
 
 .column {
@@ -94,8 +96,8 @@ const columnWidth = computed(() => {
 }
 
 .even {
-  background-color: #f6f7f7;
-  border: 1px solid #e4edf2;
+  background-color: var( --color-background-mute);
+  border: 1px solid var(--color-border);
 }
 
 .cell {

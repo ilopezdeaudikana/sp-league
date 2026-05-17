@@ -1,25 +1,26 @@
-<script lang="ts" setup></script>
-
 <template>
-  <div class="container">
-    <main class="body">
+  <main class="mainContainer">
+    <section class="mainSection">
       <slot></slot>
-    </main>
-  </div>
+    </section>
+  </main>
 </template>
 
 <style scoped>
-.container {
-  display: flex;
-  flex: 1;
+.mainContainer {
+  display: grid;
   width: 100%;
-  justify-content: center;
-}
-.body {
-  display: flex;
-  flex-direction: column;
-  max-width: 90%;
-  flex: 1;
+  gap: 1rem;
+  padding: 0 0 1rem 0;
+  height: calc(100vh - 105px);
+  margin: 0 auto;
+  overflow: auto;
 }
 
+.mainSection {
+  padding: 0 1rem;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
 </style>
