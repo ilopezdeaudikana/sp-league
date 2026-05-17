@@ -10,7 +10,6 @@ const version = ref('')
 onMounted(async () => {
   version.value = await VersionService.fetchVersion()
   await AuthService.getToken()
-  console.log('App mounted')
   loaded.value = true
 })
 

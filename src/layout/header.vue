@@ -8,8 +8,15 @@ import svg from '@/assets/images/logo.svg'
       <img :src="svg" alt="logo" />
     </div>
     <div class="links">
-      <router-link to="/schedule" class="link"><img src="@/assets/images/schedule.png" alt="Schedule" /> Schedule</router-link>
-      <router-link to="/leaderboard" class="link"><img src="@/assets/images/leaderboard.png" alt="Leader Board" /> Leader Board</router-link>
+      <router-link to="/teams" class="link"><img src="@/assets/images/teams.png" alt="Teams" />
+        <span>Teams</span>
+      </router-link>
+      <router-link to="/schedule" class="link"><img src="@/assets/images/schedule.png" alt="Schedule" />
+      <span>Schedule</span>
+      </router-link>
+      <router-link to="/leaderboard" class="link"><img src="@/assets/images/leaderboard.png" alt="Leader Board" />
+        <span>Leader Board</span>
+      </router-link>
     </div>
   </div>
 </template>
@@ -30,7 +37,7 @@ import svg from '@/assets/images/logo.svg'
   flex: 1;
 }
 .links {
-  max-width: 350px;
+  max-width: 25rem;
   display: flex;
   flex-direction: row;
   gap: 40px;
@@ -40,6 +47,8 @@ import svg from '@/assets/images/logo.svg'
   color: white;
   text-decoration: none;
   height: 25px;
+  display: flex;
+  gap: 0.5rem;
   > img {
     height: 25px;
     vertical-align: middle;

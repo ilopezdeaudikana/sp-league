@@ -1,0 +1,51 @@
+<script setup lang="ts">
+import { useMatches } from '@/hooks/useMatches'
+import { computed } from 'vue'
+import { router } from '../router'
+
+const { data: matches, isPending, error } = useMatches()
+
+const teams = computed(() => new Set(matches.value?.map(match => match.homeTeam)))
+
+</script>
+
+<template>
+  <div v-if="isPending">Loading...</div>
+  <div v-if="error">Error loading matches</div>
+  <section class="teams">
+    <template
+      v-for="value in teams"
+      :key="value"
+    >
+      <img
+        :src="`https://flagsapi.codeaid.io/${value}.png`"
+        class="flag"
+        :alt="value"
+        @click="router.push({ name: 'team', params: { id: value } })"
+      />
+    </template>
+  </section>
+
+</template>
+<style scoped>
+.teams {
+  display: grid;
+  gap: 1rem;
+  width: 50rem;
+  align-self: center;
+  padding-top: 2rem;
+  justify-content: flex-start;
+  align-content: space-evenly;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.flag {
+  height: 12rem;
+  width: 15rem;
+  border: 1px solid;
+  border-radius: 2rem;
+  border-color: var(--vt-c-indigo);
+  margin: 0 auto;
+  cursor: pointer;
+}
+</style>

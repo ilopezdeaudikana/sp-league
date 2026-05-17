@@ -1,19 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import HomeView from '../views/HomeView.vue'
 import ScheduleView from '../views/schedule-view.vue'
-import LeaderBoardView from '../views/leader-board-view.vue'
 import Four04View from '../views/four-04-view.vue'
 
 
-// dynamic imports, enums for route names
-const router = createRouter({
+// enums for route names
+export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'home',
-    //   component: HomeView
-    // }
     {
       path: '/:pathMatch(.*)*',
       name: 'Four04',
@@ -32,9 +25,18 @@ const router = createRouter({
     {
       path: '/leaderboard',
       name: 'leaderBoard',
-      component: LeaderBoardView
-    }
+      component: () => import('../views/leader-board-view.vue')
+    },
+    {
+      path: '/teams',
+      name: 'teams',
+      component: () => import('../views/teams-view.vue')
+    },
+    {
+      path: '/team/:id',
+      name: 'team',
+      component: () => import('../views/team-detail-view.vue')
+    },
   ]
 })
 
-export default router

@@ -2,6 +2,21 @@ import type { ApiMatch } from '@/types/match'
 import type { NamedTeamStats, TeamStats } from '@/types/team'
 import { ref } from 'vue'
 
+export const calculateTeamStats = (
+  team: TeamStats,
+  ownScore: number,
+  opponentsScore: number
+): TeamStats => {
+  const points = ownScore > opponentsScore ? 3 : ownScore === opponentsScore ? 1 : 0
+  return {
+    mp: team.mp + 1,
+    gf: team.gf + ownScore,
+    ga: team.ga + opponentsScore,
+    gd: team.gf + ownScore - (team.ga + opponentsScore),
+    points: team.points + points
+  }
+}
+
 export const useStandings = () => {
   const teamsByPoints = ref<NamedTeamStats[]>([])
 
@@ -17,20 +32,6 @@ export const useStandings = () => {
 
   const tiedIndexes: number[] = []
 
-  const calculateTeamStats = (
-    team: TeamStats,
-    ownScore: number,
-    opponentsScore: number
-  ): TeamStats => {
-    const points = ownScore > opponentsScore ? 3 : ownScore === opponentsScore ? 1 : 0
-    return {
-      mp: team.mp + 1,
-      gf: team.gf + ownScore,
-      ga: team.ga + opponentsScore,
-      gd: team.gf + ownScore - (team.ga + opponentsScore),
-      points: team.points + points
-    }
-  }
   const createStatsPerTeam = (items: ApiMatch[]): Record<string, TeamStats> => {
     return items.reduce<Record<string, TeamStats>>((acc, cur) => {
       const { homeTeam: ht, awayTeam: awt, matchPlayed, homeTeamScore, awayTeamScore } = cur
