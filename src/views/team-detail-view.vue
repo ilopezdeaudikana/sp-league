@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { router } from '../router'
 import { calculateTeamStats } from '../hooks/use-standings'
 import type { TeamStats, TeamStatsViewModel } from '@/types/team'
@@ -16,7 +16,7 @@ const teamStandings = ref<TeamStatsViewModel[]>([])
 
 const { filters, handlePlayedMatches } = useMatchFilters({ matchPlayed: true })
 
-const { teamMatches, isPending, error } = useFilteredMatches(filters, team.value)
+const { teamMatches, isPending, error } = useFilteredMatches(filters, team)
 
 const teamStats = computed(() => {
   return teamMatches.value?.reduce((result, current) => {

@@ -1,29 +1,63 @@
 <script lang="ts" setup>
+
 interface FiltersProps {
   matchPlayed?: boolean
+  showSearch?: boolean
 }
 
 interface FiltersEmits {
-  'match-payed': [boolean]
+  (e: 'match-payed', played: boolean): void,
+  (e: 'search', team: string): void
 }
 
 const props = defineProps<FiltersProps>()
 
 const emit = defineEmits<FiltersEmits>()
 
+const team = defineModel<string>('team', { default: '' })
+
 const handlePlayedMatches = () => {
   emit('match-payed', !props.matchPlayed)
 }
 </script>
 <template>
-  <button
-    class="button"
-    @click="handlePlayedMatches"
-  >
-    {{ matchPlayed ? 'Show upcoming games' : 'Show previous games' }}
-  </button>
+  <div class="filters">
+    <button
+      class="button"
+      @click="handlePlayedMatches"
+    >
+      {{ matchPlayed ? 'Show upcoming games' : 'Show previous games' }}
+    </button>
+    <div
+      v-if="showSearch"
+      class="search"
+    >
+      <label for="name">Filter by team</label>
+      <input
+        class="searchInput"
+        id="name"
+        type="text"
+        :value="team"
+        @change="$event => emit('search', ($event.target as HTMLInputElement)?.value)"
+      />
+    </div>
+  </div>
 </template>
 <style lang="css" scoped>
+.filters {
+  display: flex;
+  gap: 1rem;
+}
+
+.search {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.searchInput {
+  height: 2rem;
+}
+
 .button {
   width: max-content;
   margin-bottom: 1rem;
