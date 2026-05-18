@@ -3,17 +3,38 @@ import { computed, type ComputedRef, type Ref } from 'vue'
 import type { ApiMatch } from '@/types/match'
 import { toTypedKeys } from '@/utils/toTypedKeys'
 
-export const useFilteredMatches = <K extends keyof ApiMatch>(filters: Ref<Record<K , boolean | string>>) => {
+
+type MatchKey = Exclude<keyof ApiMatch, 'stadium' | 'homeTeamScore' | 'awayTeamScore' | 'matchDate'>
+
+type FiltersObject = {
+  [K in MatchKey]?:  boolean | string
+};
+
+export const useFilteredMatches = (filters: Ref<FiltersObject>, team?: string) => {
 
   const { data, isPending, error } = useMatches()
 
+  const matchesFilterer = (match: ApiMatch): boolean => {
+    const keysToMatch = toTypedKeys(filters.value)
+
+    const hits = keysToMatch.reduce((result, current) => {
+      if (match[current] === filters.value[current]) {
+        result++
+      }
+      return result
+    }, 0)
+
+    if (hits === keysToMatch.length) return true
+    return false
+  }
+
   const matches: ComputedRef<ApiMatch[]> = computed(() => {
-    return data.value?.filter(match => {
-      toTypedKeys(filters.value).forEach((key) => {
-        return match[key] === filters.value[key]
-      })
-    }) ?? []
+    return data.value?.filter(matchesFilterer) ?? []
   })
 
-  return { matches, isPending, error }
+  const teamMatches: ComputedRef<ApiMatch[]> = computed(() => {
+    return matches.value?.filter(match => match.awayTeam === team || match.homeTeam === team)
+  })
+
+  return { matches, teamMatches, isPending, error }
 }
