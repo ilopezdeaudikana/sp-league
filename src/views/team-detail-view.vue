@@ -1,36 +1,34 @@
 <script setup lang="ts">
-import { useMatches } from '@/hooks/useMatches'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { router } from '../router'
-import type { ApiMatch } from '@/types/match'
 import { calculateTeamStats } from '../hooks/use-standings'
 import type { TeamStats } from '@/types/team'
 import TeamStatsTable from '../components/team-stats-table.vue'
 import MatchesTable from '../components/matches-table.vue'
 import PageH1 from '../components/page-h1.vue'
+import { useFilteredMatches } from '@/hooks/use-filtered-matches'
 
-const { data: matches, isPending, error } = useMatches()
 
 const team = computed(() => { return router.currentRoute.value.params.id as string })
 
+const filters = ref({
+  matchPlayed: false,
+  awayTeam: team.value,
+  homeTeam: team.value
+})
+
+const { matches, isPending, error } = useFilteredMatches(filters)
+
 const teamStats = computed(() => {
   return matches.value?.reduce((result, current) => {
-    const { homeTeam: ht, awayTeam: awt, homeTeamScore, matchPlayed, awayTeamScore } = current
-    if (ht === team.value || awt === team.value) {
-      result.matches.push(current)
-    }
+    const { homeTeamScore, matchPlayed, awayTeamScore } = current
 
     if (!matchPlayed) return result
 
-    if (ht === team.value) {
-      result.totals = calculateTeamStats(result.totals, homeTeamScore, awayTeamScore)
-    }
+    result = calculateTeamStats(result, awayTeamScore, homeTeamScore)
 
-    if (awt === team.value) {
-      result.totals = calculateTeamStats(result.totals, awayTeamScore, homeTeamScore)
-    }
     return result
-  }, { matches: [] as ApiMatch[], totals: { gf: 0, ga: 0, points: 0, mp: 0, gd: 0 } as TeamStats })
+  }, { gf: 0, ga: 0, points: 0, mp: 0, gd: 0 } as TeamStats)
 })
 
 </script>
@@ -43,12 +41,12 @@ const teamStats = computed(() => {
     <TeamStatsTable
       v-if="teamStats"
       title="Stats"
-      :rows="[{ team: { name: team, post: false }, ...teamStats.totals }]"
+      :rows="[{ team: { name: team, post: false }, ...teamStats }]"
     />
     <MatchesTable
       v-if="teamStats"
       title="Matches"
-      :rows="teamStats.matches"
+      :rows="matches"
     />
   </section>
 

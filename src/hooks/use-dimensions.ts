@@ -6,7 +6,6 @@ export const useDimensions = (container: Ref<HTMLElement>) => {
   useResizeObserver(container, (entries) => {
     const entry = entries[0]
     const { width } = entry.contentRect
-    console.log(width)
     containerWidth.value = width
   })
 

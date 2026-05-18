@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMatches } from '@/hooks/useMatches'
+import { useMatches } from '@/hooks/use-matches'
 import { computed } from 'vue'
 import { router } from '../router'
 

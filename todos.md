@@ -1,7 +1,3 @@
-Team detail pages
-Add /teams/:teamName with a team’s record, goals, upcoming/played matches, and head-to-head results. 
-
-
 Schedule filters
 Let users filter the schedule by team, stadium, played/unplayed, or date range. This would build naturally on schedule.vue (line 1) without needing new API data.
 

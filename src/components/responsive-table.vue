@@ -1,6 +1,7 @@
 <script lang="ts" setup generic="T extends Object">
 import { ref, type Component, type Ref, computed } from 'vue'
 import { useDimensions } from '../hooks/use-dimensions'
+import { toTypedKeys } from '@/utils/toTypedKeys'
 
 export interface ColumnConfig<T, K extends keyof T> {
   name: string; display: string, centered?: boolean
@@ -28,9 +29,6 @@ const tableContainer = ref() as Ref<HTMLElement>
 
 const { isDesktop, isTablet, isMobile, containerWidth } = useDimensions(tableContainer)
 
-const toKeys = <T extends Object>(obj: T): (keyof T)[] => {
-  return Object.keys(obj) as (keyof T)[]
-}
 
 const shouldShow = (items: string[], key: string | symbol | number) => {
   if (typeof key === 'string') return items.includes(key)
@@ -76,7 +74,7 @@ const columnWidth = computed(() => {
         :class="{ even: index % 2 }"
       >
         <td
-          v-for="(cell, index) in toKeys(item)"
+          v-for="(cell, index) in toTypedKeys(item)"
           :key="cell"
           :class="{
             cell: true,
