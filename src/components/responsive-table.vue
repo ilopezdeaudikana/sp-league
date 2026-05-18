@@ -2,16 +2,16 @@
 import { ref, type Component, type Ref, computed } from 'vue'
 import { useDimensions } from '../hooks/use-dimensions'
 
-
 export interface ColumnConfig<T, K extends keyof T> {
   name: string; display: string, centered?: boolean
-  key: K; 
+  key: K
   style?: string
   cellRenderer?: Component
 }
 
 interface Props {
-  items: T[]
+  title?: string
+  rows: T[]
   columns: ColumnConfig<T, keyof T>[]
   desktopHide?: string[]
   mobileHide?: string[]
@@ -26,7 +26,7 @@ withDefaults(defineProps<Props>(), {
 
 const tableContainer = ref() as Ref<HTMLElement>
 
-const { isDesktop, isTablet, isMobile } = useDimensions(tableContainer)
+const { isDesktop, isTablet, isMobile, containerWidth } = useDimensions(tableContainer)
 
 const toKeys = <T extends Object>(obj: T): (keyof T)[] => {
   return Object.keys(obj) as (keyof T)[]
@@ -45,31 +45,58 @@ const columnWidth = computed(() => {
 </script>
 
 <template>
-  <table ref="tableContainer" class="table">
-    <thead class="header">
-      <th v-for="column in columns" :key="column.name" :class="{
-        column: true,
-        hide: isDesktop && shouldShow(desktopHide, column.name),
-        hideInTablet: isTablet && shouldShow(tabletHide, column.name),
-        hideInMobile: isMobile && shouldShow(mobileHide, column.name),
-        centered: column.centered
-      }">
-        {{ column.display }}
-      </th>
+  <table
+    ref="tableContainer"
+    class="table"
+  >
+    <thead>
+      <tr v-if="title">
+        <th :colspan="columns.length">{{ title }}</th>
+      </tr>
+      <tr class="header">
+        <th
+          v-for="column in columns"
+          :key="column.name"
+          :class="{
+            column: true,
+            hide: isDesktop && shouldShow(desktopHide, column.name),
+            hideInTablet: isTablet && shouldShow(tabletHide, column.name),
+            hideInMobile: isMobile && shouldShow(mobileHide, column.name),
+            centered: column.centered
+          }"
+        >
+          {{ column.display }}
+        </th>
+      </tr>
     </thead>
     <tbody>
-      <tr v-for="(item, index) of items" :key="index" :class="{ even: index % 2 }">
-        <td v-for="(cell, index) in toKeys(item)" :key="cell" :class="{
-          cell: true,
-          hide: isDesktop && shouldShow(desktopHide, cell),
-          hideInTablet: isTablet && shouldShow(tabletHide, cell),
-          hideInMobile: isMobile && shouldShow(mobileHide, cell),
-          centered: columns[index].centered
-        }">
+      <tr
+        v-for="(item, index) of rows"
+        :key="index"
+        :class="{ even: index % 2 }"
+      >
+        <td
+          v-for="(cell, index) in toKeys(item)"
+          :key="cell"
+          :class="{
+            cell: true,
+            hide: isDesktop && shouldShow(desktopHide, cell),
+            hideInTablet: isTablet && shouldShow(tabletHide, cell),
+            hideInMobile: isMobile && shouldShow(mobileHide, cell),
+            centered: columns[index].centered
+          }"
+        >
           <template v-if="columns[index]?.cellRenderer && typeof item[cell] === 'object'">
-            <component :is="columns[index]?.cellRenderer" v-bind="item[cell]" />
+            <component
+              :is="columns[index]?.cellRenderer"
+              v-bind="item[cell]"
+            />
           </template>
-          <div v-else v-html="item[cell]" :style="columns[index]?.style"></div>
+          <div
+            v-else
+            v-html="item[cell]"
+            :style="columns[index]?.style"
+          ></div>
         </td>
       </tr>
     </tbody>
@@ -81,6 +108,7 @@ const columnWidth = computed(() => {
   border: 0;
   outline: 0;
   border-spacing: 0;
+  width: v-bind(containerWidth)
 }
 
 .header {
@@ -96,7 +124,7 @@ const columnWidth = computed(() => {
 }
 
 .even {
-  background-color: var( --color-background-mute);
+  background-color: var(--color-background-mute);
   border: 1px solid var(--color-border);
 }
 

@@ -6,6 +6,7 @@ export const useDimensions = (container: Ref<HTMLElement>) => {
   useResizeObserver(container, (entries) => {
     const entry = entries[0]
     const { width } = entry.contentRect
+    console.log(width)
     containerWidth.value = width
   })
 
@@ -17,5 +18,5 @@ export const useDimensions = (container: Ref<HTMLElement>) => {
 
   const isMobile = computed(() => containerWidth.value && containerWidth.value <= 500)
   
-  return { isTablet, isDesktop, isMobile }
+  return { isTablet, isDesktop, isMobile, containerWidth }
 }

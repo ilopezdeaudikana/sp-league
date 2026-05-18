@@ -3,22 +3,12 @@ import { onMounted, ref } from 'vue'
 import type { TeamStatsViewModel } from '@/types/team'
 import type { ApiMatch } from '@/types/match'
 import { useStandings } from '../hooks/use-standings'
-import ResponsiveTable, { type ColumnConfig } from './responsive-table.vue'
 import PageH1 from './page-h1.vue'
-import TeamRenderer from './team-renderer.vue'
+import TeamStatsTable from './team-stats-table.vue'
 
 const { matches } = defineProps<{ matches: ApiMatch[] }>()
 
 const teamsForDisplay = ref<TeamStatsViewModel[]>([])
-
-const columns: ColumnConfig<TeamStatsViewModel, keyof TeamStatsViewModel>[] = [
-  { name: 'team', key: 'team', display: 'Name', cellRenderer: TeamRenderer },
-  { name: 'mp', key: 'mp', display: 'MP', centered: true },
-  { name: 'gf', key: 'gf', display: 'GF', centered: true },
-  { name: 'ga', key: 'ga', display: 'GA', centered: true },
-  { name: 'gd', key: 'gd', display: 'GD', centered: true },
-  { name: 'points', key: 'points', display: 'Points', centered: true, style: 'font-weight: bold; font-size: 16px;' }
-]
 
 const { sortBy, parseMatches, extractTiedTeams, tieBreak, teamsByPoints } = useStandings()
 
@@ -48,11 +38,7 @@ onMounted(() => {
 
 <template>
   <PageH1>League Standings</PageH1>
-  <ResponsiveTable 
-    :items="teamsForDisplay" 
-    :columns  
-    :desktop-hide="['gd']" 
-    :tablet-hide="['gd']"
-    :mobile-hide="['gf', 'ga']" 
+  <TeamStatsTable 
+    :rows="teamsForDisplay"
   />
 </template>

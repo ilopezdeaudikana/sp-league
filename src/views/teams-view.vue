@@ -21,6 +21,7 @@ const teams = computed(() => new Set(matches.value?.map(match => match.homeTeam)
         :src="`https://flagsapi.codeaid.io/${value}.png`"
         class="flag"
         :alt="value"
+        :title="value"
         @click="router.push({ name: 'team', params: { id: value } })"
       />
     </template>
@@ -36,16 +37,17 @@ const teams = computed(() => new Set(matches.value?.map(match => match.homeTeam)
   padding-top: 2rem;
   justify-content: flex-start;
   align-content: space-evenly;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
 .flag {
-  height: 12rem;
-  width: 15rem;
+  height: 6.75rem;
+  width: 10rem;
   border: 1px solid;
-  border-radius: 2rem;
-  border-color: var(--vt-c-indigo);
+  border-radius: 1.25rem;
+  border-color: var(--vt-c-indigo-faded);
   margin: 0 auto;
   cursor: pointer;
+  box-shadow: var(--shadow-elevated);
 }
 </style>
