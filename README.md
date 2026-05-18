@@ -5,9 +5,11 @@ Stack: Vue 3, Vite, Vitest, Typescript.
 ## Requirements: 
 
 ### Routes
-- `/` - should open the Schedule Page.
-- `/schedule` - should open the Schedule Page.
-- `/leaderboard` - should open the Leaderboard Page.
+- `/` - opens the Schedule Page.
+- `/schedule` -  opens the Schedule Page.
+- `/leaderboard` - opens the Leaderboard Page.
+- `/teams` - shows a list with all teams.
+- `/teams/:id` - open a view for an specific team.
 - Any other route should show the 404 Not Found page.
 
 #### Tie Breaker: 
