@@ -66,10 +66,10 @@ export const useStandings = () => {
   }
 
   const extractTiedTeams = (items: NamedTeamStats[], key: keyof NamedTeamStats, global = false) => {
+    let tiedIndex : number | null = null
     return items
       .reduce<string[][]>(
         (acc, stats, index) => {
-          let tiedIndex = null
           const lastTiedTeamsSet = acc[acc.length - 1]
           const previousTeamStats = items[index - 1]
           if (previousTeamStats && previousTeamStats[key] === stats[key]) {

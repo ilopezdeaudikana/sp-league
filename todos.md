@@ -1,7 +1,4 @@
 
-Tiebreaker explanation panel
-For teams tied on points, show why one team ranks above another: head-to-head points, then goal difference, then goals scored, then name. This would make the existing logic in use-standings.ts (line 1) visible and useful.
-
 Live “next match” / “recent result” summary
 Add a small dashboard strip above the schedule showing the next unplayed match and the most recent played result. It would make the first page feel more alive without changing the app’s core.
 

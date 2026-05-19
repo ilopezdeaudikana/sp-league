@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMatches } from '../hooks/use-matches'
-import { onMounted, ref } from 'vue'
+import { ref, watch } from 'vue'
 import type { TeamStatsViewModel } from '@/types/team'
 import { useStandings } from '../hooks/use-standings'
 import PageH1 from '../components/page-h1.vue'
@@ -12,28 +12,32 @@ const teamsForDisplay = ref<TeamStatsViewModel[]>([])
 
 const { sortBy, parseMatches, extractTiedTeams, tieBreak, teamsByPoints } = useStandings()
 
-onMounted(() => {
+watch(matches, () => {
   teamsByPoints.value = sortBy(parseMatches(matches.value ?? []), 'points')
 
   const extracted = extractTiedTeams(teamsByPoints.value, 'points', true)
 
-  if (extracted.length) {
-    for (let index = 0; index < extracted.length; index++) {
-      const tiedTeamsMatches = matches.value?.filter(
-        (match) =>
-          extracted[index].includes(match.homeTeam) && extracted[index].includes(match.awayTeam)
-      )
-      const parsed = parseMatches(tiedTeamsMatches ?? [])
+  // if (extracted.length) {
+  //   for (let index = 0; index < extracted.length; index++) {
+  //     const tiedTeamsMatches = matches.value?.filter(
+  //       (match) =>
+  //         extracted[index].includes(match.homeTeam) && extracted[index].includes(match.awayTeam) && match.matchPlayed
+  //     )
+  //   //  console.log(tiedTeamsMatches, extracted[index])
+  //     if (tiedTeamsMatches?.length) {
+  //       tieBreak(parseMatches(tiedTeamsMatches ?? []), index, 0)
+  //     }
+  //   }
+  // }
 
-      tieBreak(parsed, index, 0)
-    }
-  }
   teamsForDisplay.value = teamsByPoints.value.reduce((acc, stats) => {
+    if(!stats) return acc
     const { name, mp, gf, ga, gd, points } = stats
     acc.push({ team: { name, post: false }, mp, gf, ga, gd, points })
     return acc
   }, [] as TeamStatsViewModel[])
-})
+}, { immediate: true })
+
 </script>
 
 <template>

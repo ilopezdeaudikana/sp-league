@@ -10,7 +10,7 @@ const corsOptions = {
   origin: 'http://localhost:5173'
 }
 
-const matches = [
+const baseMatches = [
   {
     matchDate: Date.UTC(2026, 3, 4, 15, 0),
     stadium: 'Maracanã',
@@ -264,6 +264,23 @@ const matches = [
     awayTeamScore: 0
   }
 ]
+
+const teamName = (team: string) => team.trim().toLowerCase()
+const matchupKey = (homeTeam: string, awayTeam: string) => `${teamName(homeTeam)}:${teamName(awayTeam)}`
+
+const existingMatchups = new Set(baseMatches.map(({ homeTeam, awayTeam }) => matchupKey(homeTeam, awayTeam)))
+
+const reverseMatches = baseMatches
+  .filter(({ homeTeam, awayTeam }) => !existingMatchups.has(matchupKey(awayTeam, homeTeam)))
+  .map((match) => ({
+    ...match,
+    homeTeam: match.awayTeam,
+    awayTeam: match.homeTeam,
+    homeTeamScore: match.awayTeamScore,
+    awayTeamScore: match.homeTeamScore
+  }))
+
+const matches = [...baseMatches, ...reverseMatches]
 
 app.use(cors(corsOptions))
 
