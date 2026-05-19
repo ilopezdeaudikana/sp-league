@@ -3,28 +3,28 @@
 interface FiltersProps {
   matchPlayed?: boolean
   showSearch?: boolean
+  calendarView?: boolean
 }
 
 interface FiltersEmits {
   (e: 'match-payed', played: boolean): void,
+  (e: 'calendar-view', isCalendar: boolean): void,
   (e: 'search', team: string): void
 }
 
-const props = defineProps<FiltersProps>()
+const { matchPlayed, showSearch, calendarView } = defineProps<FiltersProps>()
 
 const emit = defineEmits<FiltersEmits>()
 
 const team = defineModel<string>('team', { default: '' })
 
-const handlePlayedMatches = () => {
-  emit('match-payed', !props.matchPlayed)
-}
 </script>
 <template>
   <div class="filters">
+    <button class="button" @click="$emit('calendar-view', !calendarView)">Calendar view</button>
     <button
       class="button"
-      @click="handlePlayedMatches"
+      @click="$emit('match-payed', !matchPlayed)"
     >
       {{ matchPlayed ? 'Show upcoming games' : 'Show previous games' }}
     </button>

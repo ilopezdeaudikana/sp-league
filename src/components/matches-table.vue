@@ -4,6 +4,7 @@ import ResponsiveTable from './responsive-table.vue'
 import TeamRenderer from './team-renderer.vue'
 import { computed } from 'vue'
 import type { ApiMatch, MatchResult } from '@/types/match'
+import { toCustomDateFormat } from '@/utils/toCustomDate'
 
 const { rows } = defineProps<{
   title?: string
@@ -17,18 +18,6 @@ const columns: ColumnConfig<MatchResult, keyof MatchResult>[] = [
   { name: 'result', key: 'result', display: '', style: 'font-weight: bold; font-size: 16px; text-align: center' },
   { name: 'awayTeam', key: 'awayTeam', display: 'Away Team', cellRenderer: TeamRenderer }
 ]
-
-const toCustomDateFormat = (matchDate: number): string => {
-  return new Date(matchDate)
-    .toLocaleString('de', {
-      month: 'numeric',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-    .replace(',', '')
-}
 
 const matches = computed(() => {
   return rows.reduce<MatchResult[]>((acc, cur) => {
