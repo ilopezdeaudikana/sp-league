@@ -1,5 +1,5 @@
 <script lang="ts" setup generic="T extends Object">
-import { ref, type Component, type Ref, computed } from 'vue'
+import { ref, type Component, type Ref } from 'vue'
 import { useDimensions } from '../hooks/use-dimensions'
 import { toTypedKeys } from '@/utils/toTypedKeys'
 
@@ -34,12 +34,6 @@ const shouldShow = (items: string[], key: string | symbol | number) => {
   if (typeof key === 'string') return items.includes(key)
 }
 
-const columnWidth = computed(() => {
-  if (isDesktop.value) return '20%'
-  if (isTablet.value) return '25%'
-  if (isMobile.value) return '33%'
-  return 'auto'
-})
 </script>
 
 <template>
@@ -88,6 +82,7 @@ const columnWidth = computed(() => {
             <component
               :is="columns[index]?.cellRenderer"
               v-bind="item[cell]"
+              :style="columns[index]?.style"
             />
           </template>
           <div
@@ -118,7 +113,6 @@ const columnWidth = computed(() => {
   text-align: left;
   height: 40px;
   font-size: 12px;
-  width: v-bind(columnWidth)
 }
 
 .even {

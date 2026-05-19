@@ -20,31 +20,29 @@ const imagePath = computed(() => `https://flagsapi.codeaid.io/${props.name}.png`
 
 <style scoped>
 .wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  align-items: center;  
 }
 
 .pre {
-  justify-content: flex-start;
-  .flag {
-    margin-right: 10px;
-  }
+  grid-template-columns: 4rem 6rem;
 }
 
 .post { 
-  .flag {
-    margin-left: 10px;
-  }
+  grid-template-columns: 6rem 4rem;
 }
 .name {
   font-weight: bold;
-  font-size: 16px;
+  font-size: 1rem;
 }
+
 .flag {
   display: inline-block;
-  width: 53px;
-  height: 37px;
+  width: 3.25rem;
+  height: 2.25rem;
+  border: 1px solid;
+  border-radius: 0.5rem;
+  border-color: var(--vt-c-indigo-faded);
+  box-shadow: var(--shadow-elevated);
 }
 </style>

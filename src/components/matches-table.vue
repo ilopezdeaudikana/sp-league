@@ -14,9 +14,9 @@ const { rows } = defineProps<{
 const columns: ColumnConfig<MatchResult, keyof MatchResult>[] = [
   { name: 'matchDate', key: 'matchDate', display: 'Date' },
   { name: 'stadium', key: 'stadium', display: 'Stadium' },
-  { name: 'homeTeam', key: 'homeTeam', display: 'Home Team', cellRenderer: TeamRenderer },
-  { name: 'result', key: 'result', display: '', style: 'font-weight: bold; font-size: 16px; text-align: center' },
-  { name: 'awayTeam', key: 'awayTeam', display: 'Away Team', cellRenderer: TeamRenderer }
+  { name: 'homeTeam', key: 'homeTeam', display: 'Home Team', cellRenderer: TeamRenderer, style: 'width: 6.5rem;'},
+  { name: 'result', key: 'result', display: '', style: 'font-weight: bold; font-size: 16px; width: 4rem;' },
+  { name: 'awayTeam', key: 'awayTeam', display: 'Away Team', cellRenderer: TeamRenderer, style: 'width: 6.5rem;' }
 ]
 
 const matches = computed(() => {

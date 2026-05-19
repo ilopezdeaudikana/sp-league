@@ -21,7 +21,12 @@ const team = defineModel<string>('team', { default: '' })
 </script>
 <template>
   <div class="filters">
-    <button class="button" @click="$emit('calendar-view', !calendarView)">Calendar view</button>
+    <button
+      class="button"
+      @click="$emit('calendar-view', !calendarView)"
+    >
+      {{ calendarView ? 'Table view' : 'Calendar view' }}
+    </button>
     <button
       class="button"
       @click="$emit('match-payed', !matchPlayed)"
