@@ -1,6 +1,5 @@
 import type { ApiMatch } from '@/types/match'
 import type { NamedTeamStats, TeamStats } from '@/types/team'
-import { ref } from 'vue'
 
 export const calculateTeamStats = (
   team: TeamStats,
@@ -18,7 +17,6 @@ export const calculateTeamStats = (
 }
 
 export const useStandings = () => {
-  const teamsByPoints = ref<NamedTeamStats[]>([])
 
   const initialStats: TeamStats = {
     mp: 0,
@@ -27,10 +25,6 @@ export const useStandings = () => {
     gd: 0,
     points: 0
   }
-
-  const precedence = ['points', 'gd', 'gf', 'name']
-
-  const tiedIndexes: number[] = []
 
   const createStatsPerTeam = (items: ApiMatch[]): Record<string, TeamStats> => {
     return items.reduce<Record<string, TeamStats>>((acc, cur) => {
@@ -58,61 +52,45 @@ export const useStandings = () => {
   }
 
   const sortBy = (items: NamedTeamStats[], key: keyof NamedTeamStats) => {
-    return items.sort((a, b) => {
-      if (a[key] > b[key]) {
-        return -1
-      } else return 1
+    // toSorted returns a new array
+    return items.toSorted((a, b) => {
+      if (a[key] < b[key]) return 1
+      if (a[key] > b[key]) return -1
+      return 0
     })
   }
 
-  const extractTiedTeams = (items: NamedTeamStats[], key: keyof NamedTeamStats, global = false) => {
-    let tiedIndex : number | null = null
-    return items
-      .reduce<string[][]>(
-        (acc, stats, index) => {
-          const lastTiedTeamsSet = acc[acc.length - 1]
-          const previousTeamStats = items[index - 1]
-          if (previousTeamStats && previousTeamStats[key] === stats[key]) {
-            lastTiedTeamsSet.push(stats.name)
-            if (!lastTiedTeamsSet.includes(previousTeamStats.name))
-              lastTiedTeamsSet.push(previousTeamStats.name)
-            if (tiedIndex !== index && global) {
-              tiedIndexes.push(index - 1)
-            }
-            tiedIndex = index
-          } else {
-            acc.push([])
-          }
-          return acc
-        },
-        [[]]
-      )
-      .filter((item) => item.length)
+  const buildTeamsPointsMap = (items: NamedTeamStats[]) => {
+    const teamsPointsMap = new Map<number, NamedTeamStats[]>()
+    items.forEach(team => {
+      if (teamsPointsMap.has(team.points)) {
+        const existing = teamsPointsMap.get(team.points)
+        existing?.push(team)
+        teamsPointsMap.set(team.points, existing ?? [])
+      } else {
+        teamsPointsMap.set(team.points, [team])
+      }
+    })
+    return teamsPointsMap
   }
 
-  const reorderTeams = (index: number, reordered: NamedTeamStats[]) => {
-    teamsByPoints.value.splice(
-      tiedIndexes[index],
-      reordered.length,
-      ...reordered.map(
-        (item) => teamsByPoints.value.filter((original) => original.name === item.name)[0]
-      )
-    )
-  }
 
-  const tieBreak = (tiedTeams: NamedTeamStats[], index: number, precendenceIndex: number) => {
-    const key = precedence[precendenceIndex] as keyof NamedTeamStats
-    const sorted = sortBy(tiedTeams, key)
-    if (extractTiedTeams(sorted, key).length) {
-      const nextKey = precedence[precendenceIndex + 1] as keyof NamedTeamStats
-      const sortedByNextPrecedence = sortBy(sorted, nextKey)
-      tieBreak(sortedByNextPrecedence, index, precendenceIndex + 1)
+  const breakTie = (teamsPointsMap: Map<number, NamedTeamStats[]>, subset: NamedTeamStats[]) => {
+    const byGoalDiff = sortBy(subset, 'gd')
+    // different order breaks equality
+    if (JSON.stringify(subset) === JSON.stringify(byGoalDiff)) {
+      const byScoredGoals = sortBy(subset, 'gf')
+      if (JSON.stringify(subset) === JSON.stringify(byScoredGoals)) {
+        // Sorts inline, modifying the original array
+        subset.sort((a, b) => a.name.localeCompare(b.name))
+        teamsPointsMap.set(subset[0].points, subset)
+      } else {
+        teamsPointsMap.set(subset[0].points, byScoredGoals)
+      }
     } else {
-      // Stop recursion if we end up sorting by name
-      if (precendenceIndex === precedence.length - 1) reorderTeams(index, sorted.reverse())
-      else reorderTeams(index, sorted)
+      teamsPointsMap.set(subset[0].points, byGoalDiff)
     }
   }
-  // reorderTeams is only returned for testing purposes
-  return { sortBy, parseMatches, extractTiedTeams, tieBreak, reorderTeams, teamsByPoints }
+
+  return { sortBy, parseMatches, buildTeamsPointsMap, breakTie }
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useMatches } from '../hooks/use-matches'
 import { ref, watch } from 'vue'
-import type { TeamStatsViewModel } from '@/types/team'
+import type { NamedTeamStats, TeamStatsViewModel } from '@/types/team'
 import { useStandings } from '../hooks/use-standings'
 import PageH1 from '../components/page-h1.vue'
 import TeamStatsTable from '../components/team-stats-table.vue'
@@ -10,33 +10,53 @@ const { data: matches, error, isPending } = useMatches()
 
 const teamsForDisplay = ref<TeamStatsViewModel[]>([])
 
-const { sortBy, parseMatches, extractTiedTeams, tieBreak, teamsByPoints } = useStandings()
+const { sortBy, parseMatches, buildTeamsPointsMap, breakTie } = useStandings()
 
 watch(matches, () => {
-  teamsByPoints.value = sortBy(parseMatches(matches.value ?? []), 'points')
+  const teamsByPoints = sortBy(parseMatches(matches.value ?? []), 'points')
 
-  const extracted = extractTiedTeams(teamsByPoints.value, 'points', true)
+  const teamsPointsMap = buildTeamsPointsMap(teamsByPoints)
 
-  // if (extracted.length) {
-  //   for (let index = 0; index < extracted.length; index++) {
-  //     const tiedTeamsMatches = matches.value?.filter(
-  //       (match) =>
-  //         extracted[index].includes(match.homeTeam) && extracted[index].includes(match.awayTeam) && match.matchPlayed
-  //     )
-  //   //  console.log(tiedTeamsMatches, extracted[index])
-  //     if (tiedTeamsMatches?.length) {
-  //       tieBreak(parseMatches(tiedTeamsMatches ?? []), index, 0)
-  //     }
-  //   }
-  // }
+  const extracted = Array.from(teamsPointsMap.values()).filter(value => value.length > 1)
 
-  teamsForDisplay.value = teamsByPoints.value.reduce((acc, stats) => {
-    if(!stats) return acc
+  if (extracted.length) {
+    for (let index = 0; index < extracted.length; index++) {
+      const teamNames = extracted[index].map(team => team.name)
+      const tiedTeamsMatches = matches.value?.filter(
+        (match) =>
+          teamNames.includes(match.homeTeam) && teamNames.includes(match.awayTeam) && match.matchPlayed
+      )
+      if (tiedTeamsMatches?.length) {
+        const subset = sortBy(parseMatches(tiedTeamsMatches ?? []), 'points')
+        const sameOrder = extracted[index].every((obj, index) => {
+          const targetObj = subset[index]
+          if (!targetObj) return false
+          return obj.name === targetObj.name
+        })
+        if (sameOrder) {
+          breakTie(teamsPointsMap, extracted[index])
+        } else {
+          const ordered = extracted[index].reduce<NamedTeamStats[]>((result, current) => {
+            const index = subset.findIndex(team => team.name === current.name)
+            result[index] = current
+            return result
+          }, [])
+
+          teamsPointsMap.set(extracted[index][0].points, ordered)
+        }
+      } else {
+        breakTie(teamsPointsMap, extracted[index])
+      }
+    }
+  }
+
+  teamsForDisplay.value = Array.from(teamsPointsMap.values()).flat().reduce((acc, stats) => {
+    if (!stats) return acc
     const { name, mp, gf, ga, gd, points } = stats
     acc.push({ team: { name, post: false }, mp, gf, ga, gd, points })
     return acc
   }, [] as TeamStatsViewModel[])
-}, { immediate: true })
+})
 
 </script>
 
