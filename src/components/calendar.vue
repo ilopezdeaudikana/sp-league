@@ -39,7 +39,7 @@ const matchesByDate = computed<Partial<Record<number, ApiMatch[]>>>(() => Object
 const dates = computed(() => {
   const firstDate = normalizeDate(matchDates[0].getTime())
   const lastDate = normalizeDate(matchDates[matchDates.length - 1].getTime())
-  const daysDiff = getDaysBetween(firstDate, lastDate)
+  const daysDiff = getDaysBetween(firstDate, lastDate) - 1
   const days = Array(daysDiff).fill(1)
 
   return [

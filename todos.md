@@ -11,5 +11,3 @@ Right now the app shows plain Loading... and Error loading matches in schedule-v
 
 League statistics page
    Add a /stats page with top scoring teams, best defense, biggest win, highest-scoring match, draw rate, and average goals per match. All can be derived from the existing match list.
-
-folder structure
