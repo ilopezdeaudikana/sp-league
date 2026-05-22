@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import PageH1 from '../components/page-h1.vue'
-import MatchesTable from '../components/matches-table.vue'
-import MatchesFilters from '../components/matches-filters.vue'
+import PageH1 from '@/components/page-h1.vue'
+import MatchesTable from '@/components/matches-table.vue'
+import MatchesFilters from '@/components/matches-filters.vue'
 import Calendar from '@/components/calendar.vue'
 import { useFilteredMatches } from '@/hooks/use-filtered-matches'
 import { useMatchFilters } from '@/hooks/use-match-filters'

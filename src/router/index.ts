@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import ScheduleView from '../views/schedule-view.vue'
+import ScheduleView from '../schedule/views/schedule-view.vue'
 import Four04View from '../views/four-04-view.vue'
 
 
@@ -25,17 +25,17 @@ export const router = createRouter({
     {
       path: '/leaderboard',
       name: 'leaderBoard',
-      component: () => import('../views/leader-board-view.vue')
+      component: () => import('../leader-board/views/leader-board-view.vue')
     },
     {
       path: '/teams',
       name: 'teams',
-      component: () => import('../views/teams-view.vue')
+      component: () => import('../teams/views/teams-view.vue')
     },
     {
       path: '/team/:id',
       name: 'team',
-      component: () => import('../views/team-detail-view.vue')
+      component: () => import('../teams/views/team-detail-view.vue')
     },
   ]
 })

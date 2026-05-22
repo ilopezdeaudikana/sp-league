@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { TeamStatsViewModel } from '@/types/team'
-import type { ColumnConfig } from './responsive-table.vue'
-import ResponsiveTable from './responsive-table.vue'
-import TeamRenderer from './team-renderer.vue'
+import type { ColumnConfig } from '@/components/responsive-table.vue'
+import ResponsiveTable from '@/components/responsive-table.vue'
+import TeamRenderer from '@/components/team-renderer.vue'
 
 defineProps<{
   title?: string

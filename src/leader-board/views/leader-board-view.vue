@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useMatches } from '../hooks/use-matches'
+import { useMatches } from '@/hooks/use-matches'
 import { ref, watch } from 'vue'
 import type { NamedTeamStats, TeamStatsViewModel } from '@/types/team'
 import { useStandings } from '../hooks/use-standings'
-import PageH1 from '../components/page-h1.vue'
-import TeamStatsTable from '../components/team-stats-table.vue'
+import PageH1 from '@/components/page-h1.vue'
+import TeamStatsTable from '@/components/team-stats-table.vue'
 
 const { data: matches, error, isPending } = useMatches()
 
