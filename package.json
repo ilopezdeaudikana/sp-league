@@ -10,8 +10,11 @@
     "test:unit": "vitest"
   },
   "dependencies": {
+    "@primeuix/themes": "^2.0.3",
     "@tanstack/vue-query": "^5.100.10",
     "@vueuse/core": "^14.2.1",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.5.5",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4",
     "zod": "4.4.3"
@@ -27,6 +30,7 @@
     "express": "^5.2.1",
     "jsdom": "^29.0.2",
     "jsonwebtoken": "^9.0.3",
+    "sass": "^1.100.0",
     "typescript": "~6.0.2",
     "vite": "^8.0.9",
     "vitest": "^4.1.4",

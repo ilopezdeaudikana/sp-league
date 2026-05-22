@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import type { TeamStatsViewModel } from '@/types/team'
+import type { TeamStatsRow } from '@/types/team'
 import type { ColumnConfig } from '@/components/responsive-table.vue'
 import ResponsiveTable from '@/components/responsive-table.vue'
 import TeamRenderer from '@/components/team-renderer.vue'
 
 defineProps<{
   title?: string
-  rows: TeamStatsViewModel[]
+  rows: TeamStatsRow[]
 }>()
 
-const columns: ColumnConfig<TeamStatsViewModel, keyof TeamStatsViewModel>[] = [
+const columns: ColumnConfig<TeamStatsRow, keyof TeamStatsRow>[] = [
   { name: 'team', key: 'team', display: 'Name', cellRenderer: TeamRenderer },
   { name: 'mp', key: 'mp', display: 'MP', centered: true },
   { name: 'gf', key: 'gf', display: 'GF', centered: true },
@@ -23,7 +23,7 @@ const columns: ColumnConfig<TeamStatsViewModel, keyof TeamStatsViewModel>[] = [
   <ResponsiveTable 
     :title
     :rows
-    :columns  
+    :columns
     :tablet-hide="['gd']"
     :mobile-hide="['gf', 'ga']" 
   />

@@ -19,7 +19,7 @@ interface Props {
   tabletHide?: string[]
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   desktopHide: () => [],
   mobileHide: () => [],
   tabletHide: () => []
@@ -29,6 +29,12 @@ const tableContainer = ref() as Ref<HTMLElement>
 
 const { isDesktop, isTablet, isMobile, containerWidth } = useDimensions(tableContainer)
 
+const isHighlighted = (cell: unknown) => {
+  return typeof cell === 'object' &&
+    cell !== null &&
+    'highlighted' in cell &&
+    cell.highlighted === true
+}
 
 const shouldShow = (items: string[], key: string | symbol | number) => {
   if (typeof key === 'string') return items.includes(key)
@@ -54,7 +60,7 @@ const shouldShow = (items: string[], key: string | symbol | number) => {
             hide: isDesktop && shouldShow(desktopHide, column.name),
             hideInTablet: isTablet && shouldShow(tabletHide, column.name),
             hideInMobile: isMobile && shouldShow(mobileHide, column.name),
-            centered: column.centered
+            centered: column?.centered
           }"
         >
           {{ column.display }}
@@ -65,17 +71,18 @@ const shouldShow = (items: string[], key: string | symbol | number) => {
       <tr
         v-for="(item, index) of rows"
         :key="index"
-        :class="{ even: !(index % 2) }"
+        :class="{ even: !(index % 2), highlight: isHighlighted(item) }"
       >
         <td
-          v-for="(cell, index) in toTypedKeys(item)"
+          v-for="(cell, index) in toTypedKeys(item).filter(key => columns.map(column => column.name).includes(key as string))"
           :key="cell"
           :class="{
             cell: true,
             hide: isDesktop && shouldShow(desktopHide, cell),
             hideInTablet: isTablet && shouldShow(tabletHide, cell),
             hideInMobile: isMobile && shouldShow(mobileHide, cell),
-            centered: columns[index].centered
+            centered: columns[index]?.centered,
+            highlight: isHighlighted(item[cell])
           }"
         >
           <template v-if="columns[index]?.cellRenderer && typeof item[cell] === 'object'">
@@ -117,13 +124,15 @@ const shouldShow = (items: string[], key: string | symbol | number) => {
 
 .even {
   background-color: var(--color-background-mute);
-  border: 1px solid var(--color-border);
 }
 
 .cell {
-  height: 60px;
-  font-size: 14px;
+  height: 3.5rem;
+  font-size: 0.75rem;
   vertical-align: middle;
+  padding: 0 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  color: inherit;
 }
 
 .centered {
@@ -150,5 +159,12 @@ const shouldShow = (items: string[], key: string | symbol | number) => {
 
 .hideInMobile {
   display: none;
+}
+
+
+.highlight {
+  background-color: var(--p-orange-400);
+  color: var(--color-text-contrast);
+
 }
 </style>

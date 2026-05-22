@@ -5,11 +5,15 @@ import TeamRenderer from './team-renderer.vue'
 import { computed } from 'vue'
 import type { ApiMatch, MatchResult } from '@/types/match'
 import { toCustomDateFormat } from '@/utils/toCustomDate'
+import { useStorage } from '@vueuse/core'
 
 const { rows } = defineProps<{
   title?: string
   rows: ApiMatch[]
 }>()
+
+
+const favourite = useStorage('favourite-team', '')
 
 const columns: ColumnConfig<MatchResult, keyof MatchResult>[] = [
   { name: 'matchDate', key: 'matchDate', display: 'Date' },
@@ -26,9 +30,9 @@ const matches = computed(() => {
     acc.push({
       matchDate: toCustomDateFormat(matchDate),
       stadium,
-      homeTeam: { name: homeTeam, post: true },
+      homeTeam: { name: homeTeam, post: true, highlighted: favourite.value === homeTeam},
       result: matchPlayed ? `${homeTeamScore} : ${awayTeamScore}` : `- : -`,
-      awayTeam: { name: awayTeam, post: false }
+      awayTeam: { name: awayTeam, post: false, highlighted: favourite.value === awayTeam }
     })
 
     return acc

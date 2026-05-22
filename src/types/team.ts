@@ -6,10 +6,14 @@ export interface TeamStats {
   points: number
 }
 
+export interface TeamCell {
+  name: string, post: boolean, highlighted?: boolean
+}
 export interface NamedTeamStats extends TeamStats {
   name: string
 }
 
-export interface TeamStatsViewModel extends TeamStats {
-  team: { name: string, post: boolean }
+export interface TeamStatsRow extends TeamStats {
+  team: TeamCell,
+  highlighted?: boolean
 }

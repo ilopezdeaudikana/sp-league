@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { useMatches } from '@/hooks/use-matches'
 import { ref, watch } from 'vue'
-import type { NamedTeamStats, TeamStatsViewModel } from '@/types/team'
+import type { NamedTeamStats, TeamStatsRow } from '@/types/team'
 import { useStandings } from '../hooks/use-standings'
 import PageH1 from '@/components/page-h1.vue'
 import TeamStatsTable from '@/components/team-stats-table.vue'
+import { useStorage } from '@vueuse/core'
 
 const { data: matches, error, isPending } = useMatches()
 
-const teamsForDisplay = ref<TeamStatsViewModel[]>([])
+const teamsForDisplay = ref<TeamStatsRow[]>([])
+
+const favourite = useStorage('favourite-team', '')
 
 const { sortBy, parseMatches, buildTeamsPointsMap, breakTie } = useStandings()
 
@@ -54,9 +57,9 @@ watch(matches, () => {
   teamsForDisplay.value = Array.from(teamsPointsMap.values()).flat().reduce((acc, stats) => {
     if (!stats) return acc
     const { name, mp, gf, ga, gd, points } = stats
-    acc.push({ team: { name, post: false }, mp, gf, ga, gd, points })
+    acc.push({ team: { name, post: false }, mp, gf, ga, gd, points, highlighted: name === favourite.value })
     return acc
-  }, [] as TeamStatsViewModel[])
+  }, [] as TeamStatsRow[])
 }, { immediate: true })
 
 </script>

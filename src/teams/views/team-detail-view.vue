@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { router } from '@/router'
 import { calculateTeamStats } from '@/utils/teamStats'
-import type { TeamStats, TeamStatsViewModel } from '@/types/team'
+import type { TeamStats, TeamStatsRow } from '@/types/team'
 import TeamStatsTable from '@/components/team-stats-table.vue'
 import MatchesTable from '@/components/matches-table.vue'
 import PageH1 from '@/components/page-h1.vue'
@@ -10,12 +10,15 @@ import { useFilteredMatches } from '@/hooks/use-filtered-matches'
 import MatchesFilters from '@/components/matches-filters.vue'
 import Calendar from '@/components/calendar.vue'
 import { useMatchFilters } from '@/hooks/use-match-filters'
+import { useStorage } from '@vueuse/core'
 
 const team = computed(() => { return router.currentRoute.value.params.id as string })
 
-const teamStandings = ref<TeamStatsViewModel[]>([])
+const teamStandings = ref<TeamStatsRow[]>([])
 
 const calendarView = ref(false)
+
+const favourite = useStorage('favourite-team', '')
 
 const { filters, handlePlayedMatches } = useMatchFilters({ matchPlayed: true })
 
@@ -50,7 +53,23 @@ watch(teamStandings, () => {
   <div v-if="isPending">Loading...</div>
   <div v-if="error">Error loading matches</div>
   <section class="teams">
-    <PageH1>{{ team }}</PageH1>
+    <PageH1>{{ team }}
+      <i
+        v-if="favourite === team"
+        title="This team is your favourite"
+        class="pi pi-star-fill"
+        @click="favourite = ''"
+        style="font-size: 1rem"
+      />
+      <i
+        v-else
+        title="Make this team your favourite"
+        class="pi pi-star"
+        @click="favourite = team"
+        style="font-size: 1rem"
+      />
+    </PageH1>
+
     <TeamStatsTable
       v-if="teamStats"
       title="Stats"

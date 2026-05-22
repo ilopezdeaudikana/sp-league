@@ -6,9 +6,13 @@
 
 <style scoped>
 .h1 {
-  font-size: 24px;
+  display: inline-flex;
+  gap: 0.5rem;
+  font-size: 1.5rem;
   color: var(--color-text);
-  text-align: center;
+  width: max-content;
+  margin: 0 auto;
+  align-items: center;
   padding: 1rem 0;
 }
 </style>

@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import type { TeamCell } from './team'
 
 const MatchCommon = z.object({
   stadium: z.string(),
@@ -10,8 +11,8 @@ const MatchCommon = z.object({
 type MatchCommonProps = z.infer<typeof MatchCommon>
 
 export interface Match extends MatchCommonProps {
-  homeTeam: { name: string, post: boolean }
-  awayTeam: { name: string, post: boolean }
+  homeTeam: TeamCell
+  awayTeam: TeamCell
   matchDate: string
 }
 

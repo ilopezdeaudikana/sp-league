@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
 
 interface FiltersProps {
   matchPlayed?: boolean
@@ -21,28 +23,28 @@ const team = defineModel<string>('team', { default: '' })
 </script>
 <template>
   <div class="filters">
-    <button
+    <Button
       class="button"
       @click="$emit('calendar-view', !calendarView)"
     >
       {{ calendarView ? 'Table view' : 'Calendar view' }}
-    </button>
-    <button
+    </Button>
+    <Button
       class="button"
       @click="$emit('match-payed', !matchPlayed)"
     >
       {{ matchPlayed ? 'Show upcoming games' : 'Show previous games' }}
-    </button>
+    </Button>
     <div
       v-if="showSearch"
       class="search"
     >
       <label for="name">Filter by team</label>
-      <input
+      <InputText
         class="searchInput"
         id="name"
         type="text"
-        :value="team"
+        v-model="team"
         @change="$event => emit('search', ($event.target as HTMLInputElement)?.value)"
       />
     </div>

@@ -1,13 +1,10 @@
 <script lang="ts" setup>
+import type { TeamCell } from '@/types/team'
 import { computed } from 'vue'
 
-interface Props {
-  name: string
-  post: boolean
-}
-const props = defineProps<Props>()
+const { name } = defineProps<TeamCell>()
 
-const imagePath = computed(() => `https://flagsapi.codeaid.io/${props.name}.png`)
+const imagePath = computed(() => `https://flagsapi.codeaid.io/${name}.png`)
 </script>
 
 <template>
