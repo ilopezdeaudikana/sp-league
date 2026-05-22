@@ -7,7 +7,7 @@
 <style scoped>
 .h1 {
   font-size: 24px;
-  color: var(--vt-c-indigo);
+  color: var(--color-text);
   text-align: center;
   padding: 1rem 0;
 }

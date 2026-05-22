@@ -65,7 +65,7 @@ const shouldShow = (items: string[], key: string | symbol | number) => {
       <tr
         v-for="(item, index) of rows"
         :key="index"
-        :class="{ even: index % 2 }"
+        :class="{ even: !(index % 2) }"
       >
         <td
           v-for="(cell, index) in toTypedKeys(item)"
@@ -105,8 +105,8 @@ const shouldShow = (items: string[], key: string | symbol | number) => {
 }
 
 .header {
-  background-color: var(--vt-c-indigo-faded);
-  color: var(--vt-c-text-dark-1)
+  background-color: var(--color-background-contrast);
+  color: var(--color-text-contrast)
 }
 
 .column {

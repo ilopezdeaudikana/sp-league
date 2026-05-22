@@ -66,10 +66,10 @@ const team = defineModel<string>('team', { default: '' })
 .button {
   width: max-content;
   margin-bottom: 1rem;
-  background-color: var(--vt-c-indigo-faded);
-  border: 1px solid var(--vt-c-indigo);
+  background-color: var(--color-background-contrast);
+  border: 1px solid var(--color-border);
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
-  color: var(--vt-c-white-soft);
+  color: var(--color-text-contrast);
 }
 </style>

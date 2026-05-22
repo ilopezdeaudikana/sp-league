@@ -13,6 +13,7 @@ const teamsForDisplay = ref<TeamStatsViewModel[]>([])
 const { sortBy, parseMatches, buildTeamsPointsMap, breakTie } = useStandings()
 
 watch(matches, () => {
+  if (!matches.value) return
   const teamsByPoints = sortBy(parseMatches(matches.value ?? []), 'points')
 
   const teamsPointsMap = buildTeamsPointsMap(teamsByPoints)
@@ -56,7 +57,7 @@ watch(matches, () => {
     acc.push({ team: { name, post: false }, mp, gf, ga, gd, points })
     return acc
   }, [] as TeamStatsViewModel[])
-})
+}, { immediate: true })
 
 </script>
 
@@ -83,9 +84,9 @@ watch(matches, () => {
   margin: 0 0 1rem 0;
   border: 1px solid;
   border-radius: 0.5rem;
-  border-color: var(--vt-c-indigo-faded);
-  color: var(--vt-c-white-soft);
-  background-color: var(--vt-c-indigo);
+  border-color: var(--color-border);
+  color: var(--color-text-contrast);
+  background-color: var(--color-background-contrast);
   box-shadow: var(--shadow-elevated);
 }
 </style>

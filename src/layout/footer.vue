@@ -10,7 +10,8 @@ defineProps<{ version: string }>()
 
 <style scoped>
 .footer {
-  background-color: var(--color-background-soft);
+  background-color: var(--color-background);
+  color: var(--color-text);
   height: 40px;
   width: 100%;
 }

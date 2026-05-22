@@ -44,7 +44,7 @@ import svg from '@/assets/images/logo.svg'
 }
 
 .link {
-  color: white;
+  color: var(--vt-c-white-soft);
   text-decoration: none;
   height: 25px;
   display: flex;

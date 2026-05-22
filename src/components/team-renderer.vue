@@ -42,7 +42,7 @@ const imagePath = computed(() => `https://flagsapi.codeaid.io/${props.name}.png`
   height: 2.25rem;
   border: 1px solid;
   border-radius: 0.5rem;
-  border-color: var(--vt-c-indigo-faded);
+  border-color: var(--color-border);
   box-shadow: var(--shadow-elevated);
 }
 </style>

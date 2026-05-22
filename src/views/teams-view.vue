@@ -45,7 +45,7 @@ const teams = computed(() => new Set(matches.value?.map(match => match.homeTeam)
   width: 10rem;
   border: 1px solid;
   border-radius: 1.25rem;
-  border-color: var(--vt-c-indigo-faded);
+  border-color: var(--color-border);
   margin: 0 auto;
   cursor: pointer;
   box-shadow: var(--shadow-elevated);

@@ -64,8 +64,7 @@ const dates = computed(() => {
         date: true,
         full: matchesByDate[day]?.length,
         empty: !matchesByDate[day]?.length
-      }"
-      >
+      }">
         {{ toCustomDateFormat(day).replace('00:00', '') }}
       </p>
       <div
@@ -91,6 +90,7 @@ const dates = computed(() => {
 .calendar {
   align-self: center;
 }
+
 .day {
   display: flex;
   flex-direction: column;
@@ -104,13 +104,15 @@ const dates = computed(() => {
   width: 100%;
   text-align: center;
 }
+
 .empty {
-  background-color: var(--vt-c-text-dark-2);
+  background-color: var(--color-background-mute);
+  color: var(--color-text);
 }
 
 .full {
-  background-color: var(--vt-c-indigo);
-  color: var(--vt-c-white-soft);
+  background-color: var(--color-background-contrast);
+  color: var(--color-text-contrast);
 }
 
 .match {
