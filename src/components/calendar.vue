@@ -3,12 +3,15 @@ import type { ApiMatch } from '@/types/match'
 import { computed } from 'vue'
 import TeamRenderer from './team-renderer.vue'
 import { toCustomDateFormat } from '@/utils/toCustomDate'
+import { useStorage } from '@vueuse/core'
 
 interface CalendarProps {
   matches: ApiMatch[]
   matchDates: Date[]
 }
 const { matches, matchDates } = defineProps<CalendarProps>()
+
+const favourite = useStorage('favourite-team', '')
 
 const getDaysBetween = (d1: number, d2: number): number => {
 
@@ -18,6 +21,7 @@ const getDaysBetween = (d1: number, d2: number): number => {
 
   return Math.round(diffInMs / msInDay)
 }
+
 const appendZero = (n: number) => {
   const num = n.toString()
   if (num.length === 1) return `0${num}`
@@ -34,6 +38,7 @@ const normalizeDate = (date: number) => {
   d.setHours(0, 0, 0, 0)
   return d.getTime()
 }
+
 const matchesByDate = computed<Partial<Record<number, ApiMatch[]>>>(() => Object.groupBy(matches, ({ matchDate }) => normalizeDate(matchDate)))
 
 const dates = computed(() => {
@@ -76,10 +81,12 @@ const dates = computed(() => {
         <TeamRenderer
           :name="value.homeTeam"
           :post="false"
+          :class="{ team: true, highlight: value.homeTeam === favourite }"
         />
         <p class="score">{{ value.matchPlayed ? `${value.homeTeamScore} : ${value.awayTeamScore}` : '- : -' }}</p>
         <TeamRenderer
           :name="value.awayTeam"
+          :class="{ team: true, highlight: value.awayTeam === favourite }"
           post
         />
       </div>
@@ -117,13 +124,19 @@ const dates = computed(() => {
 
 .match {
   display: grid;
-  grid-template-columns: 3rem 10rem 4rem 10rem;
+  grid-template-columns: 2.5rem 1fr 2.5rem 1fr;
+  width: 100%;
   gap: 0.5rem;
   align-items: center;
   margin-bottom: 1rem;
+  padding: 0 1rem;
 }
 
 .score {
   text-align: center;
+}
+
+.team {
+  padding: 0.5rem;
 }
 </style>

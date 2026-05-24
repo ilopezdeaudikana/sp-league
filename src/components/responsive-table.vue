@@ -161,10 +161,8 @@ const shouldShow = (items: string[], key: string | symbol | number) => {
   display: none;
 }
 
-
 .highlight {
   background-color: var(--p-orange-400);
   color: var(--color-text-contrast);
-
 }
 </style>
