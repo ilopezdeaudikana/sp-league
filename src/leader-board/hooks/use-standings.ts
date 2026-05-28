@@ -1,8 +1,17 @@
+import { useMatches } from '@/hooks/use-matches'
 import type { ApiMatch } from '@/types/match'
-import type { NamedTeamStats, TeamStats } from '@/types/team'
+import type { NamedTeamStats, TeamStats, TeamStatsRow } from '@/types/team'
 import { calculateTeamStats } from '@/utils/teamStats'
+import { useStorage } from '@vueuse/core'
+import { ref, watch } from 'vue'
 
 export const useStandings = () => {
+
+  const { data: matches, error, isPending } = useMatches()
+
+  const teams = ref<TeamStatsRow[]>([])
+
+  const favourite = useStorage('favourite-team', '')
 
   const initialStats: TeamStats = {
     mp: 0,
@@ -60,7 +69,6 @@ export const useStandings = () => {
     return teamsPointsMap
   }
 
-
   const breakTie = (teamsPointsMap: Map<number, NamedTeamStats[]>, subset: NamedTeamStats[]) => {
     const byGoalDiff = sortBy(subset, 'gd')
     // different order breaks equality
@@ -78,5 +86,58 @@ export const useStandings = () => {
     }
   }
 
-  return { sortBy, parseMatches, buildTeamsPointsMap, breakTie }
+  const sortTiedTeams = (tiedTeams: NamedTeamStats[][], matchesMap: Map<string, ApiMatch>, teamsPointsMap: Map<number, NamedTeamStats[]>) => {
+    for (let index = 0; index < tiedTeams.length; index++) {
+      const [teamA, teamB] = tiedTeams[index].map(team => team.name)
+      const tiedTeamsMatches = [matchesMap.get(`${teamA}-${teamB}`), matchesMap.get(`${teamB}-${teamA}`)].filter(
+        (match): match is ApiMatch => !!match && match.matchPlayed
+      )
+      if (tiedTeamsMatches?.length) {
+        const subset = sortBy(parseMatches(tiedTeamsMatches ?? []), 'points')
+        const sameOrder = tiedTeams[index].every((obj, index) => {
+          const targetObj = subset[index]
+          if (!targetObj) return false
+          return obj.name === targetObj.name
+        })
+        if (sameOrder) {
+          breakTie(teamsPointsMap, tiedTeams[index])
+        } else {
+          const ordered = tiedTeams[index].reduce<NamedTeamStats[]>((result, current) => {
+            const index = subset.findIndex(team => team.name === current.name)
+            result[index] = current
+            return result
+          }, [])
+
+          teamsPointsMap.set(tiedTeams[index][0].points, ordered)
+        }
+      } else {
+        breakTie(teamsPointsMap, tiedTeams[index])
+      }
+    }
+  }
+
+  watch(matches, () => {
+    if (!matches.value) return
+    
+    const teamsByPoints = sortBy(parseMatches(matches.value ?? []), 'points')
+
+    const teamsPointsMap = buildTeamsPointsMap(teamsByPoints)
+
+    const tiedTeams = Array.from(teamsPointsMap.values()).filter(value => value.length > 1)
+
+    const matchesMap = new Map<string, ApiMatch>(matches.value.map(match => [`${match.homeTeam}-${match.awayTeam}`, match]))
+
+    if (tiedTeams.length) {
+      sortTiedTeams(tiedTeams, matchesMap, teamsPointsMap)
+    }
+
+    teams.value = Array.from(teamsPointsMap.values()).flat().reduce((acc, stats) => {
+      if (!stats) return acc
+      const { name, mp, gf, ga, gd, points } = stats
+      acc.push({ team: { name, post: false }, mp, gf, ga, gd, points, highlighted: name === favourite.value })
+      return acc
+    }, [] as TeamStatsRow[])
+  }, { immediate: true })
+
+  return { teams, error, isPending }
 }
