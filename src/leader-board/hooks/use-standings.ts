@@ -1,59 +1,13 @@
 import { useMatches } from '@/hooks/use-matches'
 import type { ApiMatch } from '@/types/match'
-import type { NamedTeamStats, TeamStats, TeamStatsRow } from '@/types/team'
-import { calculateTeamStats } from '@/utils/teamStats'
+import type { NamedTeamStats, TeamStatsRow } from '@/types/team'
+import { sortBy } from '@/utils/sortBy'
+import { parseMatches } from '@/utils/stats'
 import { useStorage } from '@vueuse/core'
-import { ref, watch } from 'vue'
 
 export const useStandings = () => {
 
-  const { data: matches, error, isPending } = useMatches()
-
-  const teams = ref<TeamStatsRow[]>([])
-
   const favourite = useStorage('favourite-team', '')
-
-  const initialStats: TeamStats = {
-    mp: 0,
-    gf: 0,
-    ga: 0,
-    gd: 0,
-    points: 0
-  }
-
-  const createStatsPerTeam = (items: ApiMatch[]): Record<string, TeamStats> => {
-    return items.reduce<Record<string, TeamStats>>((acc, cur) => {
-      const { homeTeam: ht, awayTeam: awt, matchPlayed, homeTeamScore, awayTeamScore } = cur
-
-      if (!matchPlayed) return acc
-
-      const homeTeam = acc[ht] ?? { ...initialStats }
-      const awayTeam = acc[awt] ?? { ...initialStats }
-
-      const homeTeamChanges = calculateTeamStats(homeTeam, homeTeamScore, awayTeamScore)
-      const awayTeamChanges = calculateTeamStats(awayTeam, awayTeamScore, homeTeamScore)
-
-      return { ...acc, [ht]: homeTeamChanges, [awt]: awayTeamChanges }
-    }, {})
-  }
-
-  const parseMatches = (items: ApiMatch[]): NamedTeamStats[] => {
-    const results = createStatsPerTeam(items)
-
-    return Object.keys(results).map((key: string) => {
-      const { mp, gf, ga, points, gd } = results[key]
-      return { name: key, mp, gf, ga, gd, points }
-    })
-  }
-
-  const sortBy = (items: NamedTeamStats[], key: keyof NamedTeamStats) => {
-    // toSorted returns a new array
-    return items.toSorted((a, b) => {
-      if (a[key] < b[key]) return 1
-      if (a[key] > b[key]) return -1
-      return 0
-    })
-  }
 
   const buildTeamsPointsMap = (items: NamedTeamStats[]) => {
     const teamsPointsMap = new Map<number, NamedTeamStats[]>()
@@ -116,28 +70,28 @@ export const useStandings = () => {
     }
   }
 
-  watch(matches, () => {
-    if (!matches.value) return
-    
-    const teamsByPoints = sortBy(parseMatches(matches.value ?? []), 'points')
+  const transformMatches = (matches: ApiMatch[]) => {
+    const teamsByPoints = sortBy(parseMatches(matches), 'points')
 
     const teamsPointsMap = buildTeamsPointsMap(teamsByPoints)
 
     const tiedTeams = Array.from(teamsPointsMap.values()).filter(value => value.length > 1)
 
-    const matchesMap = new Map<string, ApiMatch>(matches.value.map(match => [`${match.homeTeam}-${match.awayTeam}`, match]))
+    const matchesMap = new Map<string, ApiMatch>(matches.map(match => [`${match.homeTeam}-${match.awayTeam}`, match]))
 
     if (tiedTeams.length) {
       sortTiedTeams(tiedTeams, matchesMap, teamsPointsMap)
     }
 
-    teams.value = Array.from(teamsPointsMap.values()).flat().reduce((acc, stats) => {
+    return Array.from(teamsPointsMap.values()).flat().reduce((acc, stats) => {
       if (!stats) return acc
       const { name, mp, gf, ga, gd, points } = stats
       acc.push({ team: { name, post: false }, mp, gf, ga, gd, points, highlighted: name === favourite.value })
       return acc
     }, [] as TeamStatsRow[])
-  }, { immediate: true })
+  }
+  
+  const { data: teams, error, isPending } = useMatches(transformMatches)
 
   return { teams, error, isPending }
 }

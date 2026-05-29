@@ -107,7 +107,7 @@ const baseMatches = [
     homeTeam: 'Portugal',
     awayTeam: 'Japan',
     matchPlayed: true,
-    homeTeamScore: 1,
+    homeTeamScore: 6,
     awayTeamScore: 0
   },
   {
@@ -117,7 +117,7 @@ const baseMatches = [
     awayTeam: 'Uruguay',
     matchPlayed: true,
     homeTeamScore: 2,
-    awayTeamScore: 3
+    awayTeamScore: 5
   },
   {
     matchDate: Date.UTC(2026, 4, 2, 15, 0),

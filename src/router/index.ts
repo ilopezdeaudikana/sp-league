@@ -37,6 +37,12 @@ export const router = createRouter({
       name: 'team',
       component: () => import('../teams/views/team-detail-view.vue')
     },
+
+    {
+      path: '/stats',
+      name: 'stats',
+      component: () => import('../stats/views/stats-view.vue')
+    },
   ]
 })
 

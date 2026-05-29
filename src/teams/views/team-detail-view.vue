@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { router } from '@/router'
-import { calculateTeamStats } from '@/utils/teamStats'
-import type { TeamStats, TeamStatsRow } from '@/types/team'
+import { createStatsPerTeam } from '@/utils/stats'
+import type { TeamStatsRow } from '@/types/team'
 import TeamStatsTable from '@/components/team-stats-table.vue'
 import MatchesTable from '@/components/matches-table.vue'
 import PageH1 from '@/components/page-h1.vue'
@@ -11,6 +11,7 @@ import MatchesFilters from '@/components/matches-filters.vue'
 import Calendar from '@/components/calendar.vue'
 import { useMatchFilters } from '@/hooks/use-match-filters'
 import { useStorage } from '@vueuse/core'
+import { useMatches } from '@/hooks/use-matches'
 
 const team = computed(() => { return router.currentRoute.value.params.id as string })
 
@@ -26,26 +27,12 @@ const { teamMatches, isPending, error } = useFilteredMatches(filters, team)
 
 const matchDates = computed(() => teamMatches.value.map(match => new Date(match.matchDate)).sort((a: Date, b: Date) => a.getTime() - b.getTime()))
 
-const teamStats = computed(() => {
-  return teamMatches.value?.reduce((result, current) => {
-    const { homeTeamScore, matchPlayed, awayTeamScore } = current
+const { data: teamStats } = useMatches(createStatsPerTeam)
 
-    if (!matchPlayed) return result
-
-    result = calculateTeamStats(result, awayTeamScore, homeTeamScore)
-
-    return result
-  }, { gf: 0, ga: 0, points: 0, mp: 0, gd: 0 } as TeamStats)
-})
-
-const { stop } = watch(teamMatches, () => {
-  teamStandings.value = [{ team: { name: team.value, post: false }, ...teamStats.value }]
+watch(teamMatches, () => {
+  if(!teamStats.value) return
+  teamStandings.value = [{ team: { name: team.value, post: false }, ...teamStats.value[team.value] }]
 }, { immediate: true })
-
-watch(teamStandings, () => {
-  // Only meant to be calculated once
-  if (teamStandings.value.length) stop()
-})
 
 </script>
 

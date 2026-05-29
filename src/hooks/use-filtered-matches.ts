@@ -32,7 +32,7 @@ export const useFilteredMatches = (filters: Ref<FiltersObject>, team?: Ref<strin
   })
 
   const teamMatches: ComputedRef<ApiMatch[]> = computed(() => {
-    const target = team?.value.toLowerCase()
+    const target = team?.value?.toLowerCase()
     return matches.value?.filter(match => match.awayTeam.toLowerCase() === target || match.homeTeam.toLowerCase() === target)
   })
 

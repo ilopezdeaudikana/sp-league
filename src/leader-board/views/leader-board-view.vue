@@ -22,7 +22,7 @@ const { teams, isPending, error } = useStandings()
       <li>Alphabetical order by team name</li>
     </ul>
   </div>
-  <TeamStatsTable :rows="teams" />
+  <TeamStatsTable v-if="teams" :rows="teams" />
 </template>
 
 <style lang="css" scoped>
